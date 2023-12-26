@@ -1,0 +1,24 @@
+th,
+td {
+    border: 1px solid black;
+}
+
+.win {
+    color: aliceblue;
+    font-weight: 900;
+    border: 3px solid aliceblue;
+}
+
+.lose {
+    color: yellow;
+    font-weight: 900;
+    border: 3px solid yellow;
+}
+
+td.positive {
+    background-color: green;
+}
+
+td.negative {
+    background-color: red;
+}
