@@ -70,14 +70,14 @@ async function getSingleAPIRequest(url, monthName = "none") {
 
 export async function createOneMonthRequestLinks1HourInterval(coin, month) {
     let timezoneDay = month.name === "March" ? 26 : month.name === "October" ? 29 : null;
-    const dateStart1 = new Date(`${month.name} 01, 2023 00:00:00`).getTime();
-    const dateEnd1 = new Date(`${month.name} 08, 2023 23:00:00`).getTime();
-    const dateStart2 = new Date(`${month.name} 09, 2023 00:00:00`).getTime();
-    const dateEnd2 = new Date(`${month.name} 16, 2023 23:00:00`).getTime();
-    const dateStart3 = new Date(`${month.name} 17, 2023 00:00:00`).getTime();
-    const dateEnd3 = new Date(`${month.name} 24, 2023 23:00:00`).getTime();
-    const dateStart4 = new Date(`${month.name} 25, 2023 00:00:00`).getTime();
-    const dateEnd4 = new Date(`${month.name} ${month.days}, 2023 23:00:00`).getTime();
+    const dateStart1 = new Date(`${month.name} 01, ${month.year} 00:00:00`).getTime();
+    const dateEnd1 = new Date(`${month.name} 08, ${month.year} 23:00:00`).getTime();
+    const dateStart2 = new Date(`${month.name} 09, ${month.year} 00:00:00`).getTime();
+    const dateEnd2 = new Date(`${month.name} 16, ${month.year} 23:00:00`).getTime();
+    const dateStart3 = new Date(`${month.name} 17, ${month.year} 00:00:00`).getTime();
+    const dateEnd3 = new Date(`${month.name} 24, ${month.year} 23:00:00`).getTime();
+    const dateStart4 = new Date(`${month.name} 25, ${month.year} 00:00:00`).getTime();
+    const dateEnd4 = new Date(`${month.name} ${month.days}, ${month.year} 23:00:00`).getTime();
     const url1 = `https://api.bybit.com/derivatives/v3/public/kline?category=linear&symbol=${coin}USDT&interval=60&start=${dateStart1}&end=${dateEnd1}`;
     const url2 = `https://api.bybit.com/derivatives/v3/public/kline?category=linear&symbol=${coin}USDT&interval=60&start=${dateStart2}&end=${dateEnd2}`;
     const url3 = `https://api.bybit.com/derivatives/v3/public/kline?category=linear&symbol=${coin}USDT&interval=60&start=${dateStart3}&end=${dateEnd3}`;
