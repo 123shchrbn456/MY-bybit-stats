@@ -22,7 +22,7 @@ function resetTrackingParamsOnNewRow() {
 }
 
 const leverages = {
-    x50: {
+    againstTrendx50: {
         WINNING_PERCENT_DOWN: -2,
         WINNING_PERCENT_UP: 2,
         LIQUIDATION_PERCENT_DOWN: 1,
@@ -54,7 +54,7 @@ const leverages = {
     },
 };
 
-const chosenLeverage = "x50";
+const chosenLeverage = "againstTrendx50";
 // const chosenLeverage = "accordingTrendX50";
 // const chosenLeverage = "x20";
 // const chosenLeverage = "x10";
@@ -81,84 +81,153 @@ let accumulatingWinningTurn = {
     trend: "none",
 };
 
-const q = ">=";
-const winningConsolesShow = false;
+function getNextSiblings(elem, filter) {
+    var sibs = [];
+
+    while ((elem = elem.nextSibling)) {
+        if (elem.nodeType === 3) continue; // text node
+        if (!filter || filter(elem)) sibs.push(elem);
+    }
+    return sibs;
+}
+
+// СКАНИРУЕМ РЯД ВПРАВО
+function scanRowForWinOrLose(td) {
+    const nextSiblingsArr = getNextSiblings(td);
+    const tdTrend = td.dataset.trend;
+    const tdValue = Number(td.dataset.value);
+    accumulatingWinningTurn.trend = tdTrend;
+    accumulatingWinningTurn.value = tdValue;
+    //
+    nextSiblingsArr.forEach((elem) => {
+        const elemTrend = elem.dataset.trend;
+        const elemValue = Number(elem.dataset.value);
+        accumulatingWinningTurn.value += elemValue;
+        if (threeBoxesTrend === "positive" && accumulatingWinningTurn.value >= LIQUIDATION_PERCENT_DOWN) {
+            // Lose
+            console.log("Accumulated LOSE TD value is " + elemValue);
+            console.log([elem]);
+            elem.classList.add("lose");
+            elem.textContent += "L";
+            threeBoxesTrend = elemTrend;
+            stakeTurn = 1;
+            accumulatingWinningTurn.value = 0;
+            accumulatingWinningTurn.trend = "none";
+            addResultToStatistic("lose", { td: elem, message: "Accumulated LOSE" });
+            return;
+        }
+        if (threeBoxesTrend === "negative" && accumulatingWinningTurn.value >= WINNING_PERCENT_UP) {
+            // Win
+            console.log("Accumulated WIN TD value is " + elemValue);
+            console.log([elem]);
+            elem.classList.add("win");
+            elem.textContent += "W";
+            threeBoxesTrend = elemTrend;
+            stakeTurn = 1;
+            accumulatingWinningTurn.value = 0;
+            accumulatingWinningTurn.trend = "none";
+            addResultToStatistic("win", { td: elem, message: "Accumulated WIN" });
+            return;
+        }
+        if (threeBoxesTrend === "positive" && accumulatingWinningTurn.value <= WINNING_PERCENT_DOWN) {
+            // Win
+            console.log("Accumulated WIN TD value is " + elemValue);
+            console.log([elem]);
+            elem.classList.add("win");
+            elem.textContent += "W";
+            threeBoxesTrend = elemTrend;
+            stakeTurn = 1;
+            accumulatingWinningTurn.value = 0;
+            accumulatingWinningTurn.trend = "none";
+            addResultToStatistic("win", { td: elem, message: "Accumulated WIN" });
+            return;
+        }
+        if (threeBoxesTrend === "negative" && accumulatingWinningTurn.value <= LIQUIDATION_PERCENT_UP) {
+            // Lose
+            console.log("Accumulated LOSE TD value is " + elemValue);
+            console.log([elem]);
+            elem.classList.add("lose");
+            elem.textContent += "L";
+            threeBoxesTrend = elemTrend;
+            stakeTurn = 1;
+            accumulatingWinningTurn.value = 0;
+            accumulatingWinningTurn.trend = "none";
+            addResultToStatistic("lose", { td: elem, message: "Accumulated LOSE" });
+            return;
+        }
+        // console.warn("Для этого элемента в этом ряде не найдено исхода:", td);
+    });
+}
+
 function scanColumn(td, index) {
     if (index === 0) resetTrackingParamsOnNewRow();
-
-    // console.log({ index, stakeTurn, td, threeBoxesTrend });
-
     const tdTrend = td.dataset.trend;
     const tdValue = Number(td.dataset.value);
     /* 
         -----------------------------CONDITIONS START--------------------
     */
+    // if (accumulatingWinningTurn.trend !== "none") {
+    //     accumulatingWinningTurn.value += tdValue;
+    //     if (threeBoxesTrend === "positive" && accumulatingWinningTurn.value >= LIQUIDATION_PERCENT_DOWN) {
+    //         // Lose
+    //         console.log("Accumulated LOSE TD value is " + tdValue);
+    //         console.log([td]);
+    //         td.classList.add("lose");
+    //         td.textContent += "L";
+    //         threeBoxesTrend = tdTrend;
+    //         stakeTurn = 1;
+    //         accumulatingWinningTurn.value = 0;
+    //         accumulatingWinningTurn.trend = "none";
+    //         addResultToStatistic("lose", { td: td, message: "Accumulated LOSE" });
+    //         return;
+    //     }
+    //     if (threeBoxesTrend === "negative" && accumulatingWinningTurn.value >= WINNING_PERCENT_UP) {
+    //         // Win
+    //         console.log("Accumulated WIN TD value is " + tdValue);
+    //         console.log([td]);
+    //         td.classList.add("win");
+    //         td.textContent += "W";
+    //         threeBoxesTrend = tdTrend;
+    //         stakeTurn = 1;
+    //         accumulatingWinningTurn.value = 0;
+    //         accumulatingWinningTurn.trend = "none";
+    //         addResultToStatistic("win", { td: td, message: "Accumulated WIN" });
+    //         return;
+    //     }
+    //     if (threeBoxesTrend === "positive" && accumulatingWinningTurn.value <= WINNING_PERCENT_DOWN) {
+    //         // Win
+    //         console.log("Accumulated WIN TD value is " + tdValue);
+    //         console.log([td]);
+    //         td.classList.add("win");
+    //         td.textContent += "W";
+    //         threeBoxesTrend = tdTrend;
+    //         stakeTurn = 1;
+    //         accumulatingWinningTurn.value = 0;
+    //         accumulatingWinningTurn.trend = "none";
+    //         addResultToStatistic("win", { td: td, message: "Accumulated WIN" });
+    //         return;
+    //     }
+    //     if (threeBoxesTrend === "negative" && accumulatingWinningTurn.value <= LIQUIDATION_PERCENT_UP) {
+    //         // Lose
+    //         console.log("Accumulated LOSE TD value is " + tdValue);
+    //         console.log([td]);
+    //         td.classList.add("lose");
+    //         td.textContent += "L";
+    //         threeBoxesTrend = tdTrend;
+    //         stakeTurn = 1;
+    //         accumulatingWinningTurn.value = 0;
+    //         accumulatingWinningTurn.trend = "none";
+    //         addResultToStatistic("lose", { td: td, message: "Accumulated LOSE" });
+    //         return;
+    //     }
+    // }
 
-    if (accumulatingWinningTurn.trend !== "none") {
-        accumulatingWinningTurn.value += tdValue;
-        if (threeBoxesTrend === "positive" && accumulatingWinningTurn.value >= LIQUIDATION_PERCENT_DOWN) {
-            // Lose
-            winningConsolesShow && console.log("Accumulated LOSE TD value is " + tdValue);
-            winningConsolesShow && console.log("Accumulated value is " + accumulatingWinningTurn.value);
-            winningConsolesShow && console.log([td]);
-            td.classList.add("lose");
-            td.textContent += "L";
-            threeBoxesTrend = tdTrend;
-            stakeTurn = 1;
-            accumulatingWinningTurn.value = 0;
-            accumulatingWinningTurn.trend = "none";
-            addResultToStatistic("lose", { td: td, message: "Accumulated LOSE" });
-            return;
-        }
-        if (threeBoxesTrend === "negative" && accumulatingWinningTurn.value >= WINNING_PERCENT_UP) {
-            // Win
-            winningConsolesShow && console.log("Accumulated WIN TD value is " + tdValue);
-            winningConsolesShow && console.log("Accumulated value is " + accumulatingWinningTurn.value);
-            winningConsolesShow && console.log([td]);
-            td.classList.add("win");
-            td.textContent += "W";
-            threeBoxesTrend = tdTrend;
-            stakeTurn = 1;
-            accumulatingWinningTurn.value = 0;
-            accumulatingWinningTurn.trend = "none";
-            addResultToStatistic("win", { td: td, message: "Accumulated WIN" });
-            return;
-        }
-        if (threeBoxesTrend === "positive" && accumulatingWinningTurn.value <= WINNING_PERCENT_DOWN) {
-            // Win
-            winningConsolesShow && console.log("Accumulated WIN TD value is " + tdValue);
-            winningConsolesShow && console.log("Accumulated value is " + accumulatingWinningTurn.value);
-            winningConsolesShow && console.log([td]);
-            td.classList.add("win");
-            td.textContent += "W";
-            threeBoxesTrend = tdTrend;
-            stakeTurn = 1;
-            accumulatingWinningTurn.value = 0;
-            accumulatingWinningTurn.trend = "none";
-            addResultToStatistic("win", { td: td, message: "Accumulated WIN" });
-            return;
-        }
-        if (threeBoxesTrend === "negative" && accumulatingWinningTurn.value <= LIQUIDATION_PERCENT_UP) {
-            // Lose
-            winningConsolesShow && console.log("Accumulated LOSE TD value is " + tdValue);
-            winningConsolesShow && console.log("Accumulated value is " + accumulatingWinningTurn.value);
-            winningConsolesShow && console.log([td]);
-            td.classList.add("lose");
-            td.textContent += "L";
-            threeBoxesTrend = tdTrend;
-            stakeTurn = 1;
-            accumulatingWinningTurn.value = 0;
-            accumulatingWinningTurn.trend = "none";
-            addResultToStatistic("lose", { td: td, message: "Accumulated LOSE" });
-            return;
-        }
-    }
-
+    // Мгновенные проигрыши или выигрыши
     if (stakeTurn === MAX_ITERATION && threeBoxesTrend !== "none" && accumulatingWinningTurn.trend === "none") {
         if (threeBoxesTrend === "positive" && tdValue >= LIQUIDATION_PERCENT_DOWN) {
             // Immediate Lose
-            winningConsolesShow && console.log("Immediate Lose");
-            winningConsolesShow && console.log([td]);
+            console.log("Immediate Lose" + tdValue);
+            console.log([td]);
             td.classList.add("lose");
             td.textContent += "L";
             threeBoxesTrend = tdTrend;
@@ -168,8 +237,8 @@ function scanColumn(td, index) {
         }
         if (threeBoxesTrend === "negative" && tdValue >= WINNING_PERCENT_UP) {
             // Immediate Win
-            winningConsolesShow && console.log("Immediate Win");
-            winningConsolesShow && console.log([td]);
+            console.log("Immediate Win" + tdValue);
+            console.log([td]);
             td.classList.add("win");
             td.textContent += "W";
             threeBoxesTrend = tdTrend;
@@ -179,8 +248,8 @@ function scanColumn(td, index) {
         }
         if (threeBoxesTrend === "positive" && tdValue <= WINNING_PERCENT_DOWN) {
             // Immediate Win
-            winningConsolesShow && console.log("Immediate Win");
-            winningConsolesShow && console.log([td]);
+            console.log("Immediate Win" + tdValue);
+            console.log([td]);
             td.classList.add("win");
             td.textContent += "W";
             threeBoxesTrend = tdTrend;
@@ -190,8 +259,8 @@ function scanColumn(td, index) {
         }
         if (threeBoxesTrend === "negative" && tdValue <= LIQUIDATION_PERCENT_UP) {
             // Immediate Lose
-            winningConsolesShow && console.log("Immediate Lose");
-            winningConsolesShow && console.log([td]);
+            console.log("Immediate Lose" + tdValue);
+            console.log([td]);
             td.classList.add("lose");
             td.textContent += "L";
             threeBoxesTrend = tdTrend;
@@ -200,20 +269,23 @@ function scanColumn(td, index) {
             return;
         }
 
-        accumulatingWinningTurn.trend = tdTrend;
-        accumulatingWinningTurn.value = tdValue;
+        // Начинаем ACCAMULATING!
+        // Стартовать функцию уже здесь, в которую передавать td!
+        // accumulatingWinningTurn.trend = tdTrend;
+        // accumulatingWinningTurn.value = tdValue;
+        scanRowForWinOrLose(td);
         return;
     }
 
+    // Обнуляем счётчик догонов
     if (threeBoxesTrend !== tdTrend && accumulatingWinningTurn.trend === "none") {
         threeBoxesTrend = tdTrend;
         stakeTurn = 1;
         return;
     }
-    // Ячейка с таким же трендом как предидущая
-    if (threeBoxesTrend === tdTrend) {
-        if (stakeTurn < MAX_ITERATION) stakeTurn++;
-
+    // Ячейка с таким же трендом как предидущая и количество одинаковых всё ещё набирается
+    if (threeBoxesTrend === tdTrend && stakeTurn < MAX_ITERATION) {
+        stakeTurn++;
         return;
     }
 }
@@ -229,6 +301,12 @@ export function calculateStatistic(coin, iteration) {
             losersElements: [],
             winnersElements: [],
         };
+        const tds = document.querySelectorAll("td");
+        tds.forEach((td) => {
+            td.classList.remove("lose");
+            td.classList.remove("win");
+        });
+
         const td1 = document.querySelectorAll(".td1");
         const td2 = document.querySelectorAll(".td2");
         const td3 = document.querySelectorAll(".td3");

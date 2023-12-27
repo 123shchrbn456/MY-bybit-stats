@@ -28,6 +28,10 @@ function App2() {
         calculateStatistic();
     }
 
+    function changeCoinHandler(e) {
+        setDataCoin(e.target.value);
+    }
+
     useEffect(() => {
         async function tryThree() {
             const reqs = months.map((month) => createOneMonthRequestLinks1HourInterval(dataCoin, month));
@@ -57,7 +61,7 @@ function App2() {
     return (
         <>
             <div>
-                <select name="" id="" value={dataCoin} onChange={(e) => setDataCoin(e.target.value)}>
+                <select name="" id="" value={dataCoin} onChange={changeCoinHandler}>
                     <option value=""></option>
                     <option value="BTC">BTC</option>
                     <option value="ETH">ETH</option>
@@ -116,13 +120,13 @@ function App2() {
                         renderData.map((coinArr, index) => {
                             return (
                                 <tr key={index}>
-                                    <td>
+                                    <td className="td-day__indicator">
                                         {coinArr[0]["finishedDay"]}.{coinArr[0]["month"]}
                                     </td>
                                     {coinArr.map((singleOrder, index) => (
                                         <td
                                             key={index}
-                                            className={singleOrder.priceChangedFor1Hour.className + ` td${index + 1}`}
+                                            className={singleOrder.priceChangedFor1Hour.className + " box" + ` td${index + 1}`}
                                             data-trend={singleOrder.priceChangedFor1Hour.className}
                                             data-value={singleOrder.priceChangedFor1Hour.value}
                                         >

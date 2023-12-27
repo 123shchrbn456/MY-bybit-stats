@@ -18,45 +18,6 @@ const tryArr = [
             value: "0.04",
         },
     },
-    {
-        finishedTime: new Date("Sun Mar 26 2023 02:00:00 GMT+0200"),
-        finishedHour: 2,
-        finishedDay: 26,
-        month: 3,
-        year: 2023,
-        openPrice: "27432.9",
-        closePrice: "27444.9",
-        priceChangedFor1Hour: {
-            className: "positive",
-            value: "0.04",
-        },
-    },
-    {
-        finishedTime: new Date("Sun Mar 26 2023 04:00:00 GMT+0200"),
-        finishedHour: 4,
-        finishedDay: 26,
-        month: 3,
-        year: 2023,
-        openPrice: "27432.9",
-        closePrice: "27444.9",
-        priceChangedFor1Hour: {
-            className: "positive",
-            value: "0.04",
-        },
-    },
-    {
-        finishedTime: new Date("Sun Mar 26 2023 05:00:00 GMT+0200"),
-        finishedHour: 5,
-        finishedDay: 26,
-        month: 3,
-        year: 2023,
-        openPrice: "27432.9",
-        closePrice: "27444.9",
-        priceChangedFor1Hour: {
-            className: "positive",
-            value: "0.04",
-        },
-    },
 ];
 
 function fillMissedDateObjects(arr) {
