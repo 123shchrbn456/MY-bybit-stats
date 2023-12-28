@@ -5,6 +5,35 @@ import { createOneMonthRequestLinks1HourInterval } from "./utils/apiUtils";
 
 const chunkArray = (arr, size) => (arr.length > size ? [arr.slice(0, size), ...chunkArray(arr.slice(size), size)] : [arr]);
 
+const tickers = [
+    "BTC",
+    "ETH",
+    "SOL",
+    "BNB",
+    "XRP",
+    "ADA",
+    "AVAX",
+    "DOGE",
+    "DOT",
+    "TRX",
+    "MATIC",
+    "UNI",
+    "ATOM",
+    "LTC",
+    "LINK",
+    "ETC",
+    "CRO",
+    "XLM",
+    "XMR",
+    "ALGO",
+    "BCH",
+    "FLOW",
+    "VET",
+    "FIL",
+    "APE",
+    "ICP",
+];
+
 const months = [
     { name: "November", days: 31, year: 2022 },
     { name: "December", days: 31, year: 2022 },
@@ -24,7 +53,7 @@ const months = [
 
 function App2() {
     const [renderData, setRenderData] = useState([]);
-    const [dataCoin, setDataCoin] = useState("BTC");
+    const [dataCoin, setDataCoin] = useState("XRP");
 
     function calculateStatisticsHandler() {
         calculateStatistic();
@@ -33,6 +62,16 @@ function App2() {
     function changeCoinHandler(e) {
         setDataCoin(e.target.value);
     }
+
+    // useEffect(() => {
+    //     let try1;
+    //     for (let i = 0; i <= tickers.length; i++) {
+    //         try1 = setTimeout(() => {
+    //             setDataCoin(tickers[i]);
+    //         }, 3000);
+    //     }
+    //     return () => clearTimeout(try1);
+    // }, []);
 
     useEffect(() => {
         async function tryThree() {
