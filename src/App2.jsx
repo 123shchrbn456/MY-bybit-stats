@@ -76,15 +76,11 @@ function App2() {
                     <option value="DOT">DOT</option>
                     <option value="TRX">TRX</option>
                     <option value="MATIC">MATIC</option>
-                    <option value="DOT">DOT</option>
                     <option value="UNI">UNI</option>
-                    {/*  */}
                     <option value="ATOM">ATOM</option>
-                    {/*  */}
                     <option value="LTC">LTC</option>
                     <option value="LINK">LINK</option>
                     <option value="ETC">ETC</option>
-                    {/*  */}
                     <option value="CRO">CRO</option>
                     <option value="XLM">XLM</option>
                     <option value="XMR">XMR</option>
