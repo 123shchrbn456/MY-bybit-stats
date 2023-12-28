@@ -6,6 +6,8 @@ import { createOneMonthRequestLinks1HourInterval } from "./utils/apiUtils";
 const chunkArray = (arr, size) => (arr.length > size ? [arr.slice(0, size), ...chunkArray(arr.slice(size), size)] : [arr]);
 
 const months = [
+    { name: "November", days: 31, year: 2022 },
+    { name: "December", days: 31, year: 2022 },
     { name: "January", days: 31, year: 2023 },
     { name: "February", days: 28, year: 2023 },
     { name: "March", days: 31, year: 2023 },
@@ -73,14 +75,33 @@ function App2() {
                     <option value="DOGE">DOGE</option>
                     <option value="DOT">DOT</option>
                     <option value="TRX">TRX</option>
-                    {/* <option value="ORDI">ORDI</option> */}
+                    <option value="MATIC">MATIC</option>
+                    <option value="DOT">DOT</option>
+                    <option value="UNI">UNI</option>
+                    {/*  */}
+                    <option value="ATOM">ATOM</option>
+                    {/*  */}
+                    <option value="LTC">LTC</option>
+                    <option value="LINK">LINK</option>
+                    <option value="ETC">ETC</option>
+                    {/*  */}
+                    <option value="CRO">CRO</option>
+                    <option value="XLM">XLM</option>
+                    <option value="XMR">XMR</option>
+                    <option value="ALGO">ALGO</option>
+                    <option value="BCH">BCH</option>
+                    <option value="FLOW">FLOW</option>
+                    <option value="VET">VET</option>
+                    <option value="FIL">FIL</option>
+                    <option value="APE">APE</option>
+                    <option value="ICP">ICP</option>
                 </select>
             </div>
             <h2>Выбранная монета :{dataCoin}</h2>
             <p>
                 <span>Выбранные месяцы {months.length}: </span>
                 {months.map((month) => (
-                    <span key={month.name}>{month.name}', '</span>
+                    <span key={Math.floor(Math.random() * Date.now())}>{month.name}', '</span>
                 ))}{" "}
             </p>
             <div className="statistics-operations">
@@ -119,13 +140,13 @@ function App2() {
                     {renderData.length ? (
                         renderData.map((coinArr, index) => {
                             return (
-                                <tr key={index}>
+                                <tr key={Math.floor(Math.random() * Date.now())}>
                                     <td className="td-day__indicator">
                                         {coinArr[0]["finishedDay"]}.{coinArr[0]["month"]}
                                     </td>
                                     {coinArr.map((singleOrder, index) => (
                                         <td
-                                            key={index}
+                                            key={Math.floor(Math.random() * Date.now())}
                                             className={singleOrder.priceChangedFor1Hour.className + " box" + ` td${index + 1}`}
                                             data-trend={singleOrder.priceChangedFor1Hour.className}
                                             data-value={singleOrder.priceChangedFor1Hour.value}

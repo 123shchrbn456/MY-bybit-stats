@@ -41,6 +41,7 @@ async function getSingleAPIRequest(url, monthName = "none") {
         if (monthName === "March") {
             const insertionIndex = 27;
             const newCustomCoinObj = structuredClone(newArr[insertionIndex]);
+            // console.log("March", newCustomCoinObj);
             // newCustomCoinObj.finishedTime = new Date(1679792400000);
             //
             newCustomCoinObj.finishedTime.setHours(3); /* ПЕРЕДЕЛАТЬ! */
