@@ -2,23 +2,15 @@ function addResultToStatistic(type, outcome) {
     if (type === "win") {
         statistics.wins++;
         // statistics.winners.push(outcome);
-        statistics.winnersElements.push(outcome.td);
+        statistics.winnersElements.push(outcome);
     } else if (type === "lose") {
         statistics.loses++;
         // statistics.losers.push(outcome);
-        statistics.losersElements.push(outcome.td);
+        statistics.losersElements.push(outcome);
     } else {
         throw new Error("Incorrect result type");
     }
-}
-
-function resetTrackingParamsOnNewRow() {
-    tenBoxesTrend = "none";
-    stakeTurn = 0;
-    accumulatingWinningTurn = {
-        value: 0,
-        trend: "none",
-    };
+    statistics.allStakes.push(outcome);
 }
 
 const leverages = {
@@ -71,91 +63,103 @@ const chosenLeverage = "againstTrendX50";
 
 const { WINNING_PERCENT_DOWN, WINNING_PERCENT_UP, LIQUIDATION_PERCENT_DOWN, LIQUIDATION_PERCENT_UP } = leverages[chosenLeverage];
 
+let tenBoxesTrend = "none";
+let stakeTurn = 0;
+const MAX_ITERATION = 6;
+let accumulatingWinningTurn = {
+    value: 0,
+    trend: "none",
+};
+
 let statistics = {
     max_iterations: MAX_ITERATION,
     wins: 0,
     loses: 0,
     losersElements: [],
     winnersElements: [],
+    allStakes: [],
 };
 
-let tenBoxesTrend = "none";
-let stakeTurn = 0;
-const MAX_ITERATION = 10;
-let accumulatingWinningTurn = {
-    value: 0,
-    trend: "none",
-};
-
-export function tryToSee(data) {
-    let singleArray = data.reduce((accumulator, currentValue) => [...accumulator, ...currentValue], []);
-    console.log("singleArray", singleArray);
-    singleArray.forEach((oneHourDataObj) => {
+export function tryToSee(coin, data) {
+    statistics = {
+        max_iterations: MAX_ITERATION,
+        wins: 0,
+        loses: 0,
+        losersElements: [],
+        winnersElements: [],
+        allStakes: [],
+    };
+    data.forEach((oneHourDataObj) => {
         scanData(oneHourDataObj);
     });
+
+    console.log(
+        `W/L:${statistics.wins - statistics.loses}|| WINS:${statistics.wins}|| LOSES:${
+            statistics.loses
+        }|| COIN:${coin}|| ПЛЕЧЁ:${chosenLeverage}|| ДОГОНЫ:${MAX_ITERATION}`
+    );
+    // console.log(statistics);
+    return data;
 }
 
 export function scanData(oneHourDataObj) {
-    // let singleArray = data.reduce((accumulator, currentValue) => [...accumulator, ...currentValue], []);
-
-    // if (index === 0) resetTrackingParamsOnNewRow();
-
     const oneHourTrend = oneHourDataObj.priceChangedFor1Hour.className;
     const oneHourValue = Number(oneHourDataObj.priceChangedFor1Hour.value);
 
     if (accumulatingWinningTurn.trend !== "none") {
         accumulatingWinningTurn.value += oneHourValue;
-        if (tenBoxesTrend === "positive" && accumulatingWinningTurn.value > LIQUIDATION_PERCENT_DOWN) {
-            // Lose
-            console.log("Accumulated LOSE TD value is " + oneHourValue);
-            console.log("Accumulated value is " + accumulatingWinningTurn.value);
-            td.classList.add("lose");
-            td.textContent += "L";
-            tenBoxesTrend = oneHourTrend;
-            stakeTurn = 1;
-            accumulatingWinningTurn.value = 0;
-            accumulatingWinningTurn.trend = "none";
-            addResultToStatistic("lose", { td: td, message: "Accumulated LOSE" });
-            return;
-        }
         if (tenBoxesTrend === "positive" && accumulatingWinningTurn.value <= WINNING_PERCENT_DOWN) {
             // Win
-            console.log("Accumulated WIN TD value is " + oneHourValue);
-            console.log("Accumulated value is " + accumulatingWinningTurn.value);
-            td.classList.add("win");
-            td.textContent += "W";
+            oneHourDataObj.outcome = {
+                className: "win",
+                text: "W",
+            };
             tenBoxesTrend = oneHourTrend;
             stakeTurn = 1;
             accumulatingWinningTurn.value = 0;
             accumulatingWinningTurn.trend = "none";
-            addResultToStatistic("win", { td: td, message: "Accumulated WIN" });
-            return;
-        }
-        if (tenBoxesTrend === "negative" && accumulatingWinningTurn.value < LIQUIDATION_PERCENT_UP) {
-            // Lose
-            console.log("Accumulated LOSE TD value is " + oneHourValue);
-            console.log("Accumulated value is " + accumulatingWinningTurn.value);
-            td.classList.add("lose");
-            td.textContent += "L";
-            tenBoxesTrend = oneHourTrend;
-            stakeTurn = 1;
-            accumulatingWinningTurn.value = 0;
-            accumulatingWinningTurn.trend = "none";
-            addResultToStatistic("lose", { td: td, message: "Accumulated LOSE" });
-            return;
+            addResultToStatistic("win", { oneHourDataObj: oneHourDataObj, message: "Accumulated WIN" });
+            return oneHourDataObj;
         }
         if (tenBoxesTrend === "negative" && accumulatingWinningTurn.value >= WINNING_PERCENT_UP) {
             // Win
-            console.log("Accumulated WIN TD value is " + oneHourValue);
-            console.log("Accumulated value is " + accumulatingWinningTurn.value);
-            td.classList.add("win");
-            td.textContent += "W";
+            oneHourDataObj.outcome = {
+                className: "win",
+                text: "W",
+            };
             tenBoxesTrend = oneHourTrend;
             stakeTurn = 1;
             accumulatingWinningTurn.value = 0;
             accumulatingWinningTurn.trend = "none";
-            addResultToStatistic("win", { td: td, message: "Accumulated WIN" });
-            return;
+            addResultToStatistic("win", { oneHourDataObj: oneHourDataObj, message: "Accumulated WIN" });
+            return oneHourDataObj;
+        }
+        if (tenBoxesTrend === "positive" && accumulatingWinningTurn.value >= LIQUIDATION_PERCENT_UP) {
+            // Lose
+            oneHourDataObj.outcome = {
+                className: "lose",
+                text: "L",
+            };
+            tenBoxesTrend = oneHourTrend;
+            stakeTurn = 1;
+            accumulatingWinningTurn.value = 0;
+            accumulatingWinningTurn.trend = "none";
+            addResultToStatistic("lose", { oneHourDataObj: oneHourDataObj, message: "Accumulated LOSE" });
+            return oneHourDataObj;
+        }
+        tenBoxesTrend === "negative" && oneHourValue <= LIQUIDATION_PERCENT_DOWN;
+        if (tenBoxesTrend === "negative" && accumulatingWinningTurn.value <= LIQUIDATION_PERCENT_DOWN) {
+            // Lose
+            oneHourDataObj.outcome = {
+                className: "lose",
+                text: "L",
+            };
+            tenBoxesTrend = oneHourTrend;
+            stakeTurn = 1;
+            accumulatingWinningTurn.value = 0;
+            accumulatingWinningTurn.trend = "none";
+            addResultToStatistic("lose", { oneHourDataObj: oneHourDataObj, message: "Accumulated LOSE" });
+            return oneHourDataObj;
         }
     }
 
@@ -163,60 +167,64 @@ export function scanData(oneHourDataObj) {
     if (stakeTurn === MAX_ITERATION && tenBoxesTrend !== "none" && accumulatingWinningTurn.trend === "none") {
         if (tenBoxesTrend === "positive" && oneHourValue <= WINNING_PERCENT_DOWN) {
             // Immediate Win
-            oneHourDataObj.outcome.className = "win";
-            oneHourDataObj.outcome.text = "W";
-            // td.classList.add("win");
-            // td.textContent += "W";
+            oneHourDataObj.outcome = {
+                className: "win",
+                text: "W",
+            };
             tenBoxesTrend = oneHourTrend;
             stakeTurn = 1;
-            addResultToStatistic("win", { td: td, message: "Immediate WIN" });
-            return;
+            addResultToStatistic("win", { oneHourDataObj: oneHourDataObj, message: "Immediate WIN" });
+            return oneHourDataObj;
         }
         if (tenBoxesTrend === "negative" && oneHourValue >= WINNING_PERCENT_UP) {
             // Immediate Win
-            td.classList.add("win");
-            td.textContent += "W";
+            oneHourDataObj.outcome = {
+                className: "win",
+                text: "W",
+            };
             tenBoxesTrend = oneHourTrend;
             stakeTurn = 1;
-            addResultToStatistic("win", { td: td, message: "Immediate WIN" });
-            return;
+            addResultToStatistic("win", { oneHourDataObj: oneHourDataObj, message: "Immediate WIN" });
+            return oneHourDataObj;
         }
         if (tenBoxesTrend === "positive" && oneHourValue >= LIQUIDATION_PERCENT_UP) {
             // Immediate Lose
-            console.log("Immediate Lose");
-            td.classList.add("lose");
-            td.textContent += "L";
+            oneHourDataObj.outcome = {
+                className: "lose",
+                text: "L",
+            };
             tenBoxesTrend = oneHourTrend;
             stakeTurn = 1;
-            addResultToStatistic("lose", { td: td, message: "Immediate LOSE" });
-            return;
+            addResultToStatistic("lose", { oneHourDataObj: oneHourDataObj, message: "Immediate LOSE" });
+            return oneHourDataObj;
         }
         if (tenBoxesTrend === "negative" && oneHourValue <= LIQUIDATION_PERCENT_DOWN) {
             // Immediate Lose
-            console.log("Immediate Lose");
-            td.classList.add("lose");
-            td.textContent += "L";
+            oneHourDataObj.outcome = {
+                className: "lose",
+                text: "L",
+            };
             tenBoxesTrend = oneHourTrend;
             stakeTurn = 1;
-            addResultToStatistic("lose", { td: td, message: "Accumulated LOSE" });
-            return;
+            addResultToStatistic("lose", { oneHourDataObj: oneHourDataObj, message: "Accumulated LOSE" });
+            return oneHourDataObj;
         }
 
         accumulatingWinningTurn.trend = oneHourTrend;
         accumulatingWinningTurn.value = oneHourValue;
-        return;
+        return oneHourDataObj;
     }
 
-    // Срабатывает
+    // Срабатывает при изменении цвета, когда ещё не набралось 10 догонов
     if (tenBoxesTrend !== oneHourTrend && accumulatingWinningTurn.trend === "none") {
         tenBoxesTrend = oneHourTrend;
         stakeTurn = 1;
-        return;
+        return oneHourDataObj;
     }
 
     // Срабатывает когда мы добираем догоны до 10
     if (tenBoxesTrend === oneHourTrend && stakeTurn < MAX_ITERATION) {
         stakeTurn++;
-        return;
+        return oneHourDataObj;
     }
 }

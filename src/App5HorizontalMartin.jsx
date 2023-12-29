@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { calcPercentageDifference } from "./utils/helpers";
-import { calculateStatistic } from "./utils/statsUtils";
-import { createOneMonthRequestLinks1HourInterval } from "./utils/apiUtils";
-import { scanData, tryToSee } from "./utils/stats5HorizontalMartin";
+import { getOneMonthData1HourInterval } from "./utilsHorizontalMartin/apiHorizontalMartin";
+import { scanData, tryToSee } from "./utilsHorizontalMartin/statsHorizontalMartin";
 
 const chunkArray = (arr, size) => (arr.length > size ? [arr.slice(0, size), ...chunkArray(arr.slice(size), size)] : [arr]);
 
@@ -36,18 +34,18 @@ const tickers = [
 ];
 
 const months = [
-    // { name: "November", days: 31, year: 2022 },
-    // { name: "December", days: 31, year: 2022 },
-    // { name: "January", days: 31, year: 2023 },
-    // { name: "February", days: 28, year: 2023 },
-    // { name: "March", days: 31, year: 2023 },
-    // { name: "April", days: 30, year: 2023 },
-    // { name: "May", days: 31, year: 2023 },
-    // { name: "June", days: 30, year: 2023 },
-    // { name: "July", days: 31, year: 2023 },
-    // { name: "August", days: 31, year: 2023 },
-    // { name: "September", days: 30, year: 2023 },
-    // { name: "October", days: 31, year: 2023 },
+    { name: "November", days: 31, year: 2022 },
+    { name: "December", days: 31, year: 2022 },
+    { name: "January", days: 31, year: 2023 },
+    { name: "February", days: 28, year: 2023 },
+    { name: "March", days: 31, year: 2023 },
+    { name: "April", days: 30, year: 2023 },
+    { name: "May", days: 31, year: 2023 },
+    { name: "June", days: 30, year: 2023 },
+    { name: "July", days: 31, year: 2023 },
+    { name: "August", days: 31, year: 2023 },
+    { name: "September", days: 30, year: 2023 },
+    { name: "October", days: 31, year: 2023 },
     { name: "November", days: 30, year: 2023 },
     // { name: "December", days: 29, year: 2023 },
 ];
@@ -57,7 +55,7 @@ function App5HorizontalMartin() {
     const [dataCoin, setDataCoin] = useState("BTC");
 
     function calculateStatisticsHandler() {
-        calculateStatistic();
+        // console.log(tryToSee(dataCoin, singArrayTransformation));
     }
 
     function changeCoinHandler(e) {
@@ -65,29 +63,27 @@ function App5HorizontalMartin() {
     }
 
     useEffect(() => {
-        // for (let i = 1; i < tickers.length; i++) {
-        //     setTimeout(() => {
-        //         setDataCoin(tickers[i]);
-        //     }, 3000 * (i + 1));
-        // }
+        for (let i = 1; i < tickers.length; i++) {
+            setTimeout(() => {
+                setDataCoin(tickers[i]);
+            }, 3000 * (i + 1));
+        }
     }, []);
 
     useEffect(() => {
         async function tryThree() {
-            const reqs = months.map((month) => createOneMonthRequestLinks1HourInterval(dataCoin, month));
+            const reqs = months.map((month) => getOneMonthData1HourInterval(dataCoin, month));
             const allPromises = Promise.all(reqs);
             try {
-                const promiseResult = await allPromises;
-                // console.log("promiseResult: ", promiseResult);
-                let singArrayTransformation = promiseResult.reduce(
-                    (accumulator, currentValue) => [...accumulator, ...currentValue],
-                    []
-                ); /* turn into one array */
-                singArrayTransformation.sort((a, b) => new Date(a[0]["finishedTime"]) - new Date(b[0]["finishedTime"])); /* sort by days */
+                const promiseResults = await allPromises;
+                const oneMonthResult = promiseResults.reduce((accumulator, currentValue) => [...accumulator, ...currentValue], []);
+                // console.log("asdasdasd", oneMonthResult);
+                oneMonthResult.sort((a, b) => new Date(a.finishedTime) - new Date(b.finishedTime)); /* sort by days */
                 // console.log(singArrayTransformation);
-                tryToSee(singArrayTransformation);
-                // scanData(singArrayTransformation)
-                setRenderData(singArrayTransformation);
+                const oneMonthDataWithOutcomes = tryToSee(dataCoin, oneMonthResult);
+                // console.log("oneMonthDataWithOutcomes", oneMonthDataWithOutcomes);
+                const dataDividedByDays = chunkArray(oneMonthDataWithOutcomes, 24);
+                setRenderData(dataDividedByDays);
                 // setTimeout(() => {
                 //     console.log(calculateStatistic(dataCoin, "x50")());
                 // }, 500);
@@ -179,14 +175,19 @@ function App5HorizontalMartin() {
                                     <td className="td-day__indicator">
                                         {coinArr[0]["finishedDay"]}.{coinArr[0]["month"]}
                                     </td>
-                                    {coinArr.map((singleOrder, index) => (
+                                    {coinArr.map((oneHourData, index) => (
                                         <td
                                             key={Math.floor(Math.random() * Date.now())}
-                                            className={singleOrder.priceChangedFor1Hour.className + " box" + ` td${index + 1}`}
-                                            data-trend={singleOrder.priceChangedFor1Hour.className}
-                                            data-value={singleOrder.priceChangedFor1Hour.value}
+                                            className={
+                                                oneHourData.priceChangedFor1Hour.className +
+                                                " box" +
+                                                ` td${index + 1} ` +
+                                                oneHourData?.outcome?.className
+                                            }
+                                            data-trend={oneHourData.priceChangedFor1Hour.className}
+                                            data-value={oneHourData.priceChangedFor1Hour.value}
                                         >
-                                            {singleOrder.priceChangedFor1Hour.value}
+                                            {oneHourData.priceChangedFor1Hour.value} {oneHourData?.outcome?.text}
                                         </td>
                                     ))}
                                 </tr>
