@@ -35,25 +35,25 @@ const tickers = [
 ];
 
 const months = [
-    { name: "November", days: 31, year: 2022 },
-    { name: "December", days: 31, year: 2022 },
-    { name: "January", days: 31, year: 2023 },
-    { name: "February", days: 28, year: 2023 },
-    { name: "March", days: 31, year: 2023 },
-    { name: "April", days: 30, year: 2023 },
-    { name: "May", days: 31, year: 2023 },
-    { name: "June", days: 30, year: 2023 },
-    { name: "July", days: 31, year: 2023 },
-    { name: "August", days: 31, year: 2023 },
-    { name: "September", days: 30, year: 2023 },
-    { name: "October", days: 31, year: 2023 },
-    { name: "November", days: 30, year: 2023 },
-    // { name: "December", days: 31 },
+    // { name: "November", days: 31, year: 2022 },
+    // { name: "December", days: 31, year: 2022 },
+    // { name: "January", days: 31, year: 2023 },
+    // { name: "February", days: 28, year: 2023 },
+    // { name: "March", days: 31, year: 2023 },
+    // { name: "April", days: 30, year: 2023 },
+    // { name: "May", days: 31, year: 2023 },
+    // { name: "June", days: 30, year: 2023 },
+    // { name: "July", days: 31, year: 2023 },
+    // { name: "August", days: 31, year: 2023 },
+    // { name: "September", days: 30, year: 2023 },
+    // { name: "October", days: 31, year: 2023 },
+    // { name: "November", days: 30, year: 2023 },
+    { name: "December", days: 29, year: 2023 },
 ];
 
 function App2() {
     const [renderData, setRenderData] = useState([]);
-    const [dataCoin, setDataCoin] = useState("XRP");
+    const [dataCoin, setDataCoin] = useState("BTC");
 
     function calculateStatisticsHandler() {
         calculateStatistic();
@@ -63,15 +63,22 @@ function App2() {
         setDataCoin(e.target.value);
     }
 
-    // useEffect(() => {
-    //     let try1;
-    //     for (let i = 0; i <= tickers.length; i++) {
-    //         try1 = setTimeout(() => {
+    // function updateCoin(i) {
+    //     timeOut =
+    //         !timeOut &&
+    //         setTimeout(() => {
     //             setDataCoin(tickers[i]);
     //         }, 3000);
-    //     }
-    //     return () => clearTimeout(try1);
-    // }, []);
+    // }
+    // let i;
+
+    useEffect(() => {
+        // for (let i = 1; i < tickers.length; i++) {
+        //     setTimeout(() => {
+        //         setDataCoin(tickers[i]);
+        //     }, 3000 * (i + 1));
+        // }
+    }, []);
 
     useEffect(() => {
         async function tryThree() {

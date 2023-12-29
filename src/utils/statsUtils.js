@@ -34,6 +34,12 @@ const leverages = {
         LIQUIDATION_PERCENT_UP: 1.5,
         LIQUIDATION_PERCENT_DOWN: -1.5,
     },
+    accordingTrendX50_takeProfit25percent: {
+        WINNING_PERCENT_UP: 0.5,
+        WINNING_PERCENT_DOWN: -0.5,
+        LIQUIDATION_PERCENT_UP: 1.5,
+        LIQUIDATION_PERCENT_DOWN: -1.5,
+    },
 
     againstTrendX50: {
         WINNING_PERCENT_UP: 2,
@@ -91,11 +97,11 @@ const leverages = {
 // const chosenLeverage = "againstTrendX10";
 // const chosenLeverage = "accordingTrendX50";
 // const chosenLeverage = "accordingTrendX20";
-const chosenLeverage = "accordingTrendX50";
+const chosenLeverage = "accordingTrendX50_takeProfit25percent";
 
 const { WINNING_PERCENT_DOWN, WINNING_PERCENT_UP, LIQUIDATION_PERCENT_DOWN, LIQUIDATION_PERCENT_UP } = leverages[chosenLeverage];
 
-const MAX_ITERATION = 10;
+const MAX_ITERATION = 13;
 
 let statistics = {
     max_iterations: MAX_ITERATION,
@@ -234,7 +240,7 @@ function scanColumn(td, index) {
             // if (threeBoxesTrend === "positive" && tdValue <= WINNING_PERCENT_DOWN) {
             td.classList.add("win");
             td.textContent += "W";
-            console.log(td);
+            // console.log(td);
             threeBoxesTrend = tdTrend;
             stakeTurn = 1;
             addResultToStatistic("win", { td: td, message: "Immediate WIN" });
@@ -246,7 +252,7 @@ function scanColumn(td, index) {
             // if (threeBoxesTrend === "negative" && tdValue >= WINNING_PERCENT_UP) {
             td.classList.add("win");
             td.textContent += "W";
-            console.log(td);
+            // console.log(td);
             threeBoxesTrend = tdTrend;
             stakeTurn = 1;
             addResultToStatistic("win", { td: td, message: "Immediate WIN" });

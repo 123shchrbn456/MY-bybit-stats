@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { calcPercentageDifference } from "./utils/helpers";
 import { calculateStatistic } from "./utils/statsUtils";
-import { createOneMonthRequestLinks4HoursInterval } from "./utils/apiUtils";
+import { createOneMonthRequestLinks1HourInterval } from "./utils/apiUtils";
 
 const chunkArray = (arr, size) => (arr.length > size ? [arr.slice(0, size), ...chunkArray(arr.slice(size), size)] : [arr]);
 
@@ -35,23 +35,23 @@ const tickers = [
 ];
 
 const months = [
-    { name: "November", days: 31, year: 2022 },
-    { name: "December", days: 31, year: 2022 },
-    { name: "January", days: 31, year: 2023 },
-    { name: "February", days: 28, year: 2023 },
-    { name: "March", days: 31, year: 2023 },
-    { name: "April", days: 30, year: 2023 },
-    { name: "May", days: 31, year: 2023 },
-    { name: "June", days: 30, year: 2023 },
-    { name: "July", days: 31, year: 2023 },
-    { name: "August", days: 31, year: 2023 },
-    { name: "September", days: 30, year: 2023 },
-    { name: "October", days: 31, year: 2023 },
+    // { name: "November", days: 31, year: 2022 },
+    // { name: "December", days: 31, year: 2022 },
+    // { name: "January", days: 31, year: 2023 },
+    // { name: "February", days: 28, year: 2023 },
+    // { name: "March", days: 31, year: 2023 },
+    // { name: "April", days: 30, year: 2023 },
+    // { name: "May", days: 31, year: 2023 },
+    // { name: "June", days: 30, year: 2023 },
+    // { name: "July", days: 31, year: 2023 },
+    // { name: "August", days: 31, year: 2023 },
+    // { name: "September", days: 30, year: 2023 },
+    // { name: "October", days: 31, year: 2023 },
     { name: "November", days: 30, year: 2023 },
-    // { name: "December", days: 31 },
+    // { name: "December", days: 29, year: 2023 },
 ];
 
-function App4HoursTable() {
+function App5HorizontalMartin() {
     const [renderData, setRenderData] = useState([]);
     const [dataCoin, setDataCoin] = useState("BTC");
 
@@ -73,8 +73,8 @@ function App4HoursTable() {
 
     useEffect(() => {
         async function tryThree() {
-            const chosenMontsRequests = months.map((month) => createOneMonthRequestLinks4HoursInterval(dataCoin, month));
-            const allPromises = Promise.all(chosenMontsRequests);
+            const reqs = months.map((month) => createOneMonthRequestLinks1HourInterval(dataCoin, month));
+            const allPromises = Promise.all(reqs);
             try {
                 const promiseResult = await allPromises;
                 // console.log("promiseResult: ", promiseResult);
@@ -83,7 +83,8 @@ function App4HoursTable() {
                     []
                 ); /* turn into one array */
                 singArrayTransformation.sort((a, b) => new Date(a[0]["finishedTime"]) - new Date(b[0]["finishedTime"])); /* sort by days */
-                // console.log("singArrayTransformation", singArrayTransformation);
+                console.log(singArrayTransformation);
+                // console.log("New request is ok");
                 setRenderData(singArrayTransformation);
                 // setTimeout(() => {
                 //     console.log(calculateStatistic(dataCoin, "x50")());
@@ -143,12 +144,30 @@ function App4HoursTable() {
                 <tbody>
                     <tr>
                         <th>Day/Hours</th>
-                        <th>02:00 | UTC(00:00)</th>``
-                        <th>06:00 | UTC(04:00)</th>
-                        <th>10:00 | UTC(08:00)</th>
-                        <th>14:00 | UTC(12:00)</th>
-                        <th>18:00 | UTC(16:00)</th>
-                        <th>22:00 | UTC(20:00)</th>
+                        <th>00:00</th>
+                        <th>01:00</th>
+                        <th>02:00</th>
+                        <th>03:00</th>
+                        <th>04:00</th>
+                        <th>05:00</th>
+                        <th>06:00</th>
+                        <th>07:00</th>
+                        <th>08:00</th>
+                        <th>09:00</th>
+                        <th>10:00</th>
+                        <th>11:00</th>
+                        <th>12:00</th>
+                        <th>13:00</th>
+                        <th>14:00</th>
+                        <th>15:00</th>
+                        <th>16:00</th>
+                        <th>17:00</th>
+                        <th>18:00</th>
+                        <th>19:00</th>
+                        <th>20:00</th>
+                        <th>21:00</th>
+                        <th>22:00</th>
+                        <th>23:00</th>
                     </tr>
 
                     {renderData.length ? (
@@ -182,4 +201,4 @@ function App4HoursTable() {
     );
 }
 
-export default App4HoursTable;
+export default App5HorizontalMartin;

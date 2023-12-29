@@ -2,18 +2,23 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 // import App from "./App.jsx";
 import App2 from "./App2.jsx";
+import App4HoursTable from "./App4HoursTable.jsx";
+import App5HorizontalMartin from "./App5HorizontalMartin.jsx";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        <App2 />
+        {/* <App2 /> */}
+        {/* <App4HoursTable /> */}
+        {/* <App4HoursTable /> */}
+        <App5HorizontalMartin />
     </React.StrictMode>
 );
 
 /* 
 План
 1- Протестировать догоны с ростом в 50%
-2-
+2-Расчитывать только на первый квадрат, если не проходит, то ликвидировать
 [x]-Внедрить инпут изменение монеты из UI, возможно через реф
 []-Сделать измениение величины плеча из  UI, возможно через реф
 []-Сделать измениение количества итераций из  UI, возможно через реф

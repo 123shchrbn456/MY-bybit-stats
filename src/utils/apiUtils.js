@@ -3,22 +3,7 @@
 
 import { calcPercentageDifference, chunkArray } from "./helpers";
 
-const months = [
-    // { name: "January", days: 31 },
-    // { name: "February", days: 28 },
-    { name: "March", days: 31 },
-    { name: "April", days: 30 },
-    { name: "May", days: 31 },
-    { name: "June", days: 30 },
-    { name: "July", days: 31 },
-    { name: "August", days: 31 },
-    { name: "September", days: 30 },
-    { name: "October", days: 31 },
-    { name: "November", days: 30 },
-    // { name: "December", days: 31 },
-];
-
-async function getSingleAPIRequest(url, monthName = "none") {
+async function getSingleAPIRequest(url, monthName = "none", urlIntervalParam) {
     // let timezoneDay = month.name === "March" ? 26 : month.name === "October" ? 29 : null;
     try {
         const response = await fetch(url);
@@ -38,7 +23,7 @@ async function getSingleAPIRequest(url, monthName = "none") {
 
         newArr.sort((a, b) => new Date(a.finishedDay) - new Date(b.finishedDay));
         // console.log("getSingleAPIRequest_SORTED", newArr);
-        if (monthName === "March") {
+        if (urlIntervalParam === "1hour" && monthName === "March") {
             const insertionIndex = 27;
             const newCustomCoinObj = structuredClone(newArr[insertionIndex]);
             // console.log("March", newCustomCoinObj);
@@ -50,7 +35,7 @@ async function getSingleAPIRequest(url, monthName = "none") {
             newArr.splice(insertionIndex, 0, newCustomCoinObj); /* вставляем новый обьект */
             // console.log("В индексе 27 фейкли криейтед", newArr);
         }
-        if (monthName === "October") {
+        if (urlIntervalParam === "1hour" && monthName === "October") {
             const editingIndex = 99;
             const deletingIndex = 100;
             const changedFor1Hour =
@@ -59,9 +44,16 @@ async function getSingleAPIRequest(url, monthName = "none") {
             newArr[editingIndex].priceChangedFor1Hour.value = changedFor1Hour;
             newArr[editingIndex].fakelyCreated = true;
             newArr.splice(deletingIndex, 1); /* удаляем один обьект */
-            // console.log("В индексе 99 фейкли криейтед", newArr);
         }
-        const chunks = chunkArray(newArr, 24); /* для реквестов &interval=60*/
+        let chunks;
+        if (urlIntervalParam === "1hour") {
+            chunks = chunkArray(newArr, 24); /* для реквестов &interval=60*/
+        } else if (urlIntervalParam === "4hour") {
+            chunks = chunkArray(newArr, 6); /* для реквестов &interval=60*/
+        } else {
+            console.error("urlIntervalParam is not passed or incorrect");
+        }
+
         // const chunks = chunkArray(newArr, 6);/* для реквестов &interval=240*/
         return chunks;
     } catch (error) {
@@ -69,8 +61,8 @@ async function getSingleAPIRequest(url, monthName = "none") {
     }
 }
 
+// 1 часовой интервал
 export async function createOneMonthRequestLinks1HourInterval(coin, month) {
-    let timezoneDay = month.name === "March" ? 26 : month.name === "October" ? 29 : null;
     const dateStart1 = new Date(`${month.name} 01, ${month.year} 00:00:00`).getTime();
     const dateEnd1 = new Date(`${month.name} 08, ${month.year} 23:00:00`).getTime();
     const dateStart2 = new Date(`${month.name} 09, ${month.year} 00:00:00`).getTime();
@@ -84,15 +76,28 @@ export async function createOneMonthRequestLinks1HourInterval(coin, month) {
     const url3 = `https://api.bybit.com/derivatives/v3/public/kline?category=linear&symbol=${coin}USDT&interval=60&start=${dateStart3}&end=${dateEnd3}`;
     const url4 = `https://api.bybit.com/derivatives/v3/public/kline?category=linear&symbol=${coin}USDT&interval=60&start=${dateStart4}&end=${dateEnd4}`;
     const allPromises = Promise.all([
-        getSingleAPIRequest(url1),
-        getSingleAPIRequest(url2),
-        getSingleAPIRequest(url3),
-        getSingleAPIRequest(url4, month.name),
+        getSingleAPIRequest(url1, month.name, "1hour"),
+        getSingleAPIRequest(url2, month.name, "1hour"),
+        getSingleAPIRequest(url3, month.name, "1hour"),
+        getSingleAPIRequest(url4, month.name, "1hour"),
     ]);
     try {
         const promiseResult = await allPromises;
         // Изменить promiseResult[4] если месяц март или октябрь
         let singArrayOneMonthData = promiseResult.reduce((accumulator, currentValue) => [...accumulator, ...currentValue], []);
+        return singArrayOneMonthData;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// 4 часовой интервал
+export async function createOneMonthRequestLinks4HoursInterval(coin, month) {
+    const dateStart = new Date(`${month.name} 01, ${month.year} 00:00:00`).getTime();
+    const dateEnd = new Date(`${month.name} ${month.days}, ${month.year} 23:00:00`).getTime();
+    const url = `https://api.bybit.com/derivatives/v3/public/kline?category=linear&symbol=${coin}USDT&interval=240&start=${dateStart}&end=${dateEnd}`;
+    try {
+        let singArrayOneMonthData = await getSingleAPIRequest(url, month.name, "4hour");
         return singArrayOneMonthData;
     } catch (err) {
         console.error(err);
