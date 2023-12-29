@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { calcPercentageDifference } from "./utils/helpers";
 import { calculateStatistic } from "./utils/statsUtils";
 import { createOneMonthRequestLinks1HourInterval } from "./utils/apiUtils";
+import { scanData, tryToSee } from "./utils/stats5HorizontalMartin";
 
 const chunkArray = (arr, size) => (arr.length > size ? [arr.slice(0, size), ...chunkArray(arr.slice(size), size)] : [arr]);
 
@@ -83,8 +84,9 @@ function App5HorizontalMartin() {
                     []
                 ); /* turn into one array */
                 singArrayTransformation.sort((a, b) => new Date(a[0]["finishedTime"]) - new Date(b[0]["finishedTime"])); /* sort by days */
-                console.log(singArrayTransformation);
-                // console.log("New request is ok");
+                // console.log(singArrayTransformation);
+                tryToSee(singArrayTransformation);
+                // scanData(singArrayTransformation)
                 setRenderData(singArrayTransformation);
                 // setTimeout(() => {
                 //     console.log(calculateStatistic(dataCoin, "x50")());
@@ -173,7 +175,7 @@ function App5HorizontalMartin() {
                     {renderData.length ? (
                         renderData.map((coinArr, index) => {
                             return (
-                                <tr key={Math.floor(Math.random() * Date.now())}>
+                                <tr className="tr-data" key={Math.floor(Math.random() * Date.now())}>
                                     <td className="td-day__indicator">
                                         {coinArr[0]["finishedDay"]}.{coinArr[0]["month"]}
                                     </td>
