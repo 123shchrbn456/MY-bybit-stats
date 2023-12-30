@@ -51,7 +51,7 @@ export function calcPercentageDifference(closedPrice, openedPrice) {
     return { className: className, value: result.toFixed(2) };
 }
 
-const dateStart4 = new Date(`November 25, 2023 00:00:00`).getTime();
-const dateEnd4 = new Date(`November 25, 2023 23:00:00`).getTime();
+const dateStart4 = new Date(`November 1, 2023 00:00:00`).getTime();
+const dateEnd4 = new Date(`November 30, 2023 23:00:00`).getTime();
 const url8 = `https://api.bybit.com/derivatives/v3/public/kline?category=linear&symbol=BTCUSDT&interval=60&start=1700863200000&end=1700946000000`;
 const url9 = `https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=1h&startTime=1700863200000&endTime=1700946000000`;

@@ -21,7 +21,6 @@ const tickers = [
     "LTC",
     "LINK",
     "ETC",
-    "CRO",
     "XLM",
     "XMR",
     "ALGO",
@@ -34,7 +33,19 @@ const tickers = [
 ];
 
 const months = [
-    { name: "November", days: 31, year: 2022 },
+    // { name: "November", days: 30, year: 2021 },
+    // { name: "December", days: 31, year: 2021 },
+    // { name: "January", days: 31, year: 2022 },
+    // { name: "February", days: 28, year: 2022 },
+    // { name: "March", days: 31, year: 2022 },
+    // { name: "April", days: 30, year: 2022 },
+    // { name: "May", days: 31, year: 2022 },
+    // { name: "June", days: 30, year: 2022 },
+    // { name: "July", days: 31, year: 2022 },
+    // { name: "August", days: 31, year: 2022 },
+    // { name: "September", days: 30, year: 2022 },
+    // { name: "October", days: 31, year: 2022 },
+    { name: "November", days: 30, year: 2022 },
     { name: "December", days: 31, year: 2022 },
     { name: "January", days: 31, year: 2023 },
     { name: "February", days: 28, year: 2023 },
@@ -51,6 +62,7 @@ const months = [
 ];
 
 function App5HorizontalMartin() {
+    // const [automatic, setAutomatic] = useState(false);
     const [stats, setStats] = useState([]);
     const [renderData, setRenderData] = useState([]);
     const [dataCoin, setDataCoin] = useState("BTC");
@@ -67,7 +79,7 @@ function App5HorizontalMartin() {
         for (let i = 1; i < tickers.length; i++) {
             setTimeout(() => {
                 setDataCoin(tickers[i]);
-            }, 3000 * (i + 1));
+            }, 4000 * (i + 1));
         }
     }, []);
 
@@ -82,7 +94,11 @@ function App5HorizontalMartin() {
                 const oneMonthDataWithOutcomes = tryToSee(dataCoin, oneMonthResult);
                 const dataDividedByDays = chunkArray(oneMonthDataWithOutcomes.data, 24);
                 setRenderData(dataDividedByDays);
-                setStats((prevStats) => [...prevStats, ...oneMonthDataWithOutcomes.allStakes]);
+                setStats((prevStats) => {
+                    const nextStats = [...prevStats, ...oneMonthDataWithOutcomes.allStakes];
+                    nextStats.sort((a, b) => new Date(a.time) - new Date(b.time));
+                    return nextStats;
+                });
             } catch (err) {
                 console.error(err);
             }
@@ -97,7 +113,12 @@ function App5HorizontalMartin() {
             <div>
                 <select name="" id="" value={dataCoin} onChange={changeCoinHandler}>
                     <option value=""></option>
-                    <option value="BTC">BTC</option>
+                    {tickers.map((ticker) => (
+                        <option key={Math.floor(Math.random() * Date.now())} value={ticker}>
+                            {ticker}
+                        </option>
+                    ))}
+                    {/* <option value="BTC">BTC</option>
                     <option value="ETH">ETH</option>
                     <option value="SOL">SOL</option>
                     <option value="BNB">BNB</option>
@@ -113,7 +134,6 @@ function App5HorizontalMartin() {
                     <option value="LTC">LTC</option>
                     <option value="LINK">LINK</option>
                     <option value="ETC">ETC</option>
-                    <option value="CRO">CRO</option>
                     <option value="XLM">XLM</option>
                     <option value="XMR">XMR</option>
                     <option value="ALGO">ALGO</option>
@@ -122,7 +142,7 @@ function App5HorizontalMartin() {
                     <option value="VET">VET</option>
                     <option value="FIL">FIL</option>
                     <option value="APE">APE</option>
-                    <option value="ICP">ICP</option>
+                    <option value="ICP">ICP</option> */}
                 </select>
             </div>
             <h2>Выбранная монета :{dataCoin}</h2>
@@ -134,6 +154,7 @@ function App5HorizontalMartin() {
             </p>
             <div className="statistics-operations">
                 <button onClick={calculateStatisticsHandler}>Calculate Statistics</button>
+                <button onClick={() => setAutomatic(true)}>Start Automatic</button>
             </div>
             <table>
                 <tbody>
