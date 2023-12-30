@@ -51,6 +51,7 @@ const months = [
 ];
 
 function App5HorizontalMartin() {
+    const [stats, setStats] = useState([]);
     const [renderData, setRenderData] = useState([]);
     const [dataCoin, setDataCoin] = useState("BTC");
 
@@ -77,16 +78,11 @@ function App5HorizontalMartin() {
             try {
                 const promiseResults = await allPromises;
                 const oneMonthResult = promiseResults.reduce((accumulator, currentValue) => [...accumulator, ...currentValue], []);
-                // console.log("asdasdasd", oneMonthResult);
                 oneMonthResult.sort((a, b) => new Date(a.finishedTime) - new Date(b.finishedTime)); /* sort by days */
-                // console.log(singArrayTransformation);
                 const oneMonthDataWithOutcomes = tryToSee(dataCoin, oneMonthResult);
-                // console.log("oneMonthDataWithOutcomes", oneMonthDataWithOutcomes);
-                const dataDividedByDays = chunkArray(oneMonthDataWithOutcomes, 24);
+                const dataDividedByDays = chunkArray(oneMonthDataWithOutcomes.data, 24);
                 setRenderData(dataDividedByDays);
-                // setTimeout(() => {
-                //     console.log(calculateStatistic(dataCoin, "x50")());
-                // }, 500);
+                setStats((prevStats) => [...prevStats, ...oneMonthDataWithOutcomes.allStakes]);
             } catch (err) {
                 console.error(err);
             }
@@ -95,6 +91,7 @@ function App5HorizontalMartin() {
         tryThree();
     }, [dataCoin]);
 
+    stats.length && console.log("STATS", stats);
     return (
         <>
             <div>

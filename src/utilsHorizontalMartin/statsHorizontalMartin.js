@@ -65,7 +65,7 @@ const { WINNING_PERCENT_DOWN, WINNING_PERCENT_UP, LIQUIDATION_PERCENT_DOWN, LIQU
 
 let tenBoxesTrend = "none";
 let stakeTurn = 0;
-const MAX_ITERATION = 6;
+const MAX_ITERATION = 12;
 let accumulatingWinningTurn = {
     value: 0,
     trend: "none",
@@ -98,8 +98,9 @@ export function tryToSee(coin, data) {
             statistics.loses
         }|| COIN:${coin}|| ПЛЕЧЁ:${chosenLeverage}|| ДОГОНЫ:${MAX_ITERATION}`
     );
+    const allStakes = statistics.allStakes.sort((a, b) => new Date(a.time) - new Date(b.time));
     // console.log(statistics);
-    return data;
+    return { data, allStakes };
 }
 
 export function scanData(oneHourDataObj) {
@@ -118,7 +119,7 @@ export function scanData(oneHourDataObj) {
             stakeTurn = 1;
             accumulatingWinningTurn.value = 0;
             accumulatingWinningTurn.trend = "none";
-            addResultToStatistic("win", { oneHourDataObj: oneHourDataObj, message: "Accumulated WIN" });
+            addResultToStatistic("win", { oneHourDataObj: oneHourDataObj, message: "Accumulated WIN", time: oneHourDataObj.finishedTime });
             return oneHourDataObj;
         }
         if (tenBoxesTrend === "negative" && accumulatingWinningTurn.value >= WINNING_PERCENT_UP) {
@@ -131,7 +132,7 @@ export function scanData(oneHourDataObj) {
             stakeTurn = 1;
             accumulatingWinningTurn.value = 0;
             accumulatingWinningTurn.trend = "none";
-            addResultToStatistic("win", { oneHourDataObj: oneHourDataObj, message: "Accumulated WIN" });
+            addResultToStatistic("win", { oneHourDataObj: oneHourDataObj, message: "Accumulated WIN", time: oneHourDataObj.finishedTime });
             return oneHourDataObj;
         }
         if (tenBoxesTrend === "positive" && accumulatingWinningTurn.value >= LIQUIDATION_PERCENT_UP) {
@@ -144,7 +145,11 @@ export function scanData(oneHourDataObj) {
             stakeTurn = 1;
             accumulatingWinningTurn.value = 0;
             accumulatingWinningTurn.trend = "none";
-            addResultToStatistic("lose", { oneHourDataObj: oneHourDataObj, message: "Accumulated LOSE" });
+            addResultToStatistic("lose", {
+                oneHourDataObj: oneHourDataObj,
+                message: "Accumulated LOSE",
+                time: oneHourDataObj.finishedTime,
+            });
             return oneHourDataObj;
         }
         tenBoxesTrend === "negative" && oneHourValue <= LIQUIDATION_PERCENT_DOWN;
@@ -158,7 +163,11 @@ export function scanData(oneHourDataObj) {
             stakeTurn = 1;
             accumulatingWinningTurn.value = 0;
             accumulatingWinningTurn.trend = "none";
-            addResultToStatistic("lose", { oneHourDataObj: oneHourDataObj, message: "Accumulated LOSE" });
+            addResultToStatistic("lose", {
+                oneHourDataObj: oneHourDataObj,
+                message: "Accumulated LOSE",
+                time: oneHourDataObj.finishedTime,
+            });
             return oneHourDataObj;
         }
     }
@@ -173,7 +182,7 @@ export function scanData(oneHourDataObj) {
             };
             tenBoxesTrend = oneHourTrend;
             stakeTurn = 1;
-            addResultToStatistic("win", { oneHourDataObj: oneHourDataObj, message: "Immediate WIN" });
+            addResultToStatistic("win", { oneHourDataObj: oneHourDataObj, message: "Immediate WIN", time: oneHourDataObj.finishedTime });
             return oneHourDataObj;
         }
         if (tenBoxesTrend === "negative" && oneHourValue >= WINNING_PERCENT_UP) {
@@ -184,7 +193,7 @@ export function scanData(oneHourDataObj) {
             };
             tenBoxesTrend = oneHourTrend;
             stakeTurn = 1;
-            addResultToStatistic("win", { oneHourDataObj: oneHourDataObj, message: "Immediate WIN" });
+            addResultToStatistic("win", { oneHourDataObj: oneHourDataObj, message: "Immediate WIN", time: oneHourDataObj.finishedTime });
             return oneHourDataObj;
         }
         if (tenBoxesTrend === "positive" && oneHourValue >= LIQUIDATION_PERCENT_UP) {
@@ -195,7 +204,7 @@ export function scanData(oneHourDataObj) {
             };
             tenBoxesTrend = oneHourTrend;
             stakeTurn = 1;
-            addResultToStatistic("lose", { oneHourDataObj: oneHourDataObj, message: "Immediate LOSE" });
+            addResultToStatistic("lose", { oneHourDataObj: oneHourDataObj, message: "Immediate LOSE", time: oneHourDataObj.finishedTime });
             return oneHourDataObj;
         }
         if (tenBoxesTrend === "negative" && oneHourValue <= LIQUIDATION_PERCENT_DOWN) {
@@ -206,7 +215,11 @@ export function scanData(oneHourDataObj) {
             };
             tenBoxesTrend = oneHourTrend;
             stakeTurn = 1;
-            addResultToStatistic("lose", { oneHourDataObj: oneHourDataObj, message: "Accumulated LOSE" });
+            addResultToStatistic("lose", {
+                oneHourDataObj: oneHourDataObj,
+                message: "Accumulated LOSE",
+                time: oneHourDataObj.finishedTime,
+            });
             return oneHourDataObj;
         }
 
