@@ -1,127 +1,8 @@
 import { useEffect, useState } from "react";
 import { getOneMonthData1HourInterval } from "./utilsHorizontalMartin/apiHorizontalMartin";
 import { scanData, tryToSee } from "./utilsHorizontalMartin/statsHorizontalMartin";
-
+import { tickersNovember2021ToNovember2023 } from "./utils/helpers";
 const chunkArray = (arr, size) => (arr.length > size ? [arr.slice(0, size), ...chunkArray(arr.slice(size), size)] : [arr]);
-
-const tickersNovember2021ToNovember2023 = [
-    "BTC",
-    "BNB",
-    "ETH",
-    "BCH",
-    "XRP",
-    "EOS",
-    "LTC",
-    "TRX",
-    "ETC",
-    "LINK",
-    "XLM",
-    "ADA",
-    "XMR",
-    "DASH",
-    "ZEC",
-    "XTZ",
-    "ATOM",
-    "ONT",
-    "IOTA",
-    "BAT",
-    "VET",
-    "NEO",
-    "QTUM",
-    "IOST",
-    "THETA",
-    "ALGO",
-    "ZIL",
-    "KNC",
-    "ZRX",
-    "COMP",
-    "OMG",
-    "DOGE",
-    "SXP",
-    "KAVA",
-    "BAND",
-    "RLC",
-    "WAVES",
-    "MKR",
-    "SNX",
-    "DOT",
-    "YFI",
-    "BAL",
-    "CRV",
-    "TRB",
-    "RUNE",
-    "SUSHI",
-    "EGLD",
-    "SOL",
-    "ICX",
-    "STORJ",
-    "BLZ",
-    "UNI",
-    "AVAX",
-    "FTM",
-    "ENJ",
-    "FLM",
-    "REN",
-    "KSM",
-    "NEAR",
-    "AAVE",
-    "FIL",
-    "RSR",
-    "LRC",
-    "MATIC",
-    "OCEAN",
-    "BEL",
-    "CTK",
-    "AXS",
-    "ALPHA",
-    "ZEN",
-    "SKL",
-    "GRT",
-    "1INCH",
-    "CHZ",
-    "LIT",
-    "RVN",
-    "XEM",
-    "SFP",
-    "CHR",
-    "ONE",
-    "HOT",
-    "MTL",
-    "OGN",
-    "NKN",
-    "DGB",
-    "GTC",
-    "C98",
-    "ATA",
-    "SAND",
-    "ANKR",
-    "UNFI",
-    "REEF",
-    "COTI",
-    "MANA",
-    "HBAR",
-    "LINA",
-    "STMX",
-    "DENT",
-    "CELR",
-    "ALICE",
-    "AR",
-    "AUDIO",
-    "1000SHIB",
-    "BAKE",
-    "IOTX",
-    "MASK",
-    "DYDX",
-    "1000XEC",
-    "GALA",
-    "CELO",
-    "KLAY",
-    "ARPA",
-    "KLAY",
-    "ARPA",
-    "CTSI",
-    // 117минут
-];
 
 const months = [
     { name: "November", days: 30, year: 2021 },
@@ -149,7 +30,7 @@ const months = [
     { name: "September", days: 30, year: 2023 },
     { name: "October", days: 31, year: 2023 },
     { name: "November", days: 30, year: 2023 },
-    // { name: "December", days: 29, year: 2023 },
+    { name: "December", days: 31, year: 2023 },
 ];
 
 function App5HorizontalMartin() {
@@ -167,11 +48,12 @@ function App5HorizontalMartin() {
     }
 
     useEffect(() => {
-        for (let i = 1; i < tickersNovember2021ToNovember2023.length; i++) {
-            setTimeout(() => {
-                setDataCoin(tickersNovember2021ToNovember2023[i]);
-            }, 35000 * (i + 1));
-        }
+        // Автоматическое переключение монет
+        // for (let i = 1; i < tickersNovember2021ToNovember2023.length; i++) {
+        //     setTimeout(() => {
+        //         setDataCoin(tickersNovember2021ToNovember2023[i]);
+        //     }, 31000 * (i + 1));
+        // }
     }, []);
 
     useEffect(() => {
@@ -198,7 +80,7 @@ function App5HorizontalMartin() {
         async function getDataWithDelays() {
             setLoading(true);
             let delay = 0;
-            const delayIncrement = 1000;
+            const delayIncrement = 100;
             // забирает 25 секунд
             const reqs = months.map((month) => {
                 delay += delayIncrement;
@@ -232,7 +114,7 @@ function App5HorizontalMartin() {
             <div>
                 <select name="" id="" value={dataCoin} onChange={changeCoinHandler}>
                     <option value=""></option>
-                    {tickersNovember2021ToNovember2022.map((ticker) => (
+                    {tickersNovember2021ToNovember2023.map((ticker) => (
                         <option key={Math.floor(Math.random() * Date.now())} value={ticker}>
                             {ticker}
                         </option>

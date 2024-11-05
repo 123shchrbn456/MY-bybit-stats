@@ -39,6 +39,24 @@ const leverages = {
         LIQUIDATION_PERCENT_UP: 1.5,
         LIQUIDATION_PERCENT_DOWN: -1.5,
     },
+    againstTrendX50_50perc_profit: {
+        WINNING_PERCENT_UP: 1,
+        WINNING_PERCENT_DOWN: -1,
+        LIQUIDATION_PERCENT_UP: 1.5,
+        LIQUIDATION_PERCENT_DOWN: -1.5,
+    },
+    againstTrendX50_halfPerc_profit: {
+        WINNING_PERCENT_UP: 0.5,
+        WINNING_PERCENT_DOWN: -0.5,
+        LIQUIDATION_PERCENT_UP: 1.5,
+        LIQUIDATION_PERCENT_DOWN: -1.5,
+    },
+    X50_2perc_liquidate: {
+        WINNING_PERCENT_UP: 2,
+        WINNING_PERCENT_DOWN: -2,
+        LIQUIDATION_PERCENT_UP: 2,
+        LIQUIDATION_PERCENT_DOWN: -2,
+    },
     againstTrendX50_takeProfit50percent: {
         WINNING_PERCENT_UP: 1,
         WINNING_PERCENT_DOWN: -1,
@@ -59,13 +77,16 @@ const leverages = {
     // },
 };
 
-const chosenLeverage = "againstTrendX50";
+const chosenLeverage = "againstTrendX50_50perc_profit";
+// const chosenLeverage = "X50_2perc_liquidate";
+// const chosenLeverage = "againstTrendX50_1perc_profit";
+// const chosenLeverage = "againstTrendX50_halfPerc_profit";
 
 const { WINNING_PERCENT_DOWN, WINNING_PERCENT_UP, LIQUIDATION_PERCENT_DOWN, LIQUIDATION_PERCENT_UP } = leverages[chosenLeverage];
 
 let tenBoxesTrend = "none";
 let stakeTurn = 0;
-const MAX_ITERATION = 12;
+const MAX_ITERATION = 8;
 let accumulatingWinningTurn = {
     value: 0,
     trend: "none",
@@ -99,6 +120,7 @@ export function tryToSee(coin, data) {
         }|| COIN:${coin}|| ПЛЕЧЁ:${chosenLeverage}|| ДОГОНЫ:${MAX_ITERATION}`
     );
     const allStakes = statistics.allStakes.sort((a, b) => new Date(a.time) - new Date(b.time));
+    console.log(`COIN:${coin}`, allStakes);
     // console.log(statistics);
     return { data, allStakes };
 }

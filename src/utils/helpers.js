@@ -51,6 +51,35 @@ export function calcPercentageDifference(closedPrice, openedPrice) {
     return { className: className, value: result.toFixed(2) };
 }
 
+const tickersJune2020ToNovember2023 = [
+    "BTC",
+    "BNB",
+    "ETH",
+    "BCH",
+    "XRP",
+    "EOS",
+    "LTC",
+    "TRX",
+    "ETC",
+    "LINK",
+    "XLM",
+    "ADA",
+    "XMR",
+    "DASH",
+    "ZEC",
+    "XTZ",
+    "ATOM",
+    "ONT",
+    "IOTA",
+    "BAT",
+    "VET",
+    "NEO",
+    "QTUM",
+    "IOST",
+    "THETA",
+    // 117минут
+];
+
 export const tickersNovember2021ToNovember2023 = [
     "BTC",
     "BNB",
@@ -162,8 +191,6 @@ export const tickersNovember2021ToNovember2023 = [
     "1000XEC",
     "GALA",
     "CELO",
-    "KLAY",
-    "ARPA",
     "KLAY",
     "ARPA",
     "CTSI",
