@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import App2 from "./App2.jsx";
 import App4HoursTable from "./App4HoursTable.jsx";
 import App5HorizontalMartin from "./App5HorizontalMartin.jsx";
+import AppHorizontalMartin12Hour from "./AppHorizontalMartin12Hour.jsx";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -11,7 +12,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         {/* <App2 /> */}
         {/* <App4HoursTable /> */}
         {/* <App4HoursTable /> */}
-        <App5HorizontalMartin />
+        {/* <App5HorizontalMartin /> */}
+        <AppHorizontalMartin12Hour />
     </React.StrictMode>
 );
 

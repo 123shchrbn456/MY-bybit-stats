@@ -101,7 +101,7 @@ let statistics = {
     allStakes: [],
 };
 
-export function tryToSee(coin, data) {
+export function tryToSee(coinName, data) {
     statistics = {
         max_iterations: MAX_ITERATION,
         wins: 0,
@@ -111,16 +111,17 @@ export function tryToSee(coin, data) {
         allStakes: [],
     };
     data.forEach((oneHourDataObj) => {
-        scanData(oneHourDataObj, coin);
+        console.log("oneHourDataObj", oneHourDataObj);
+        scanData(oneHourDataObj, coinName);
     });
 
     console.log(
         `W/L:${statistics.wins - statistics.loses}|| WINS:${statistics.wins}|| LOSES:${
             statistics.loses
-        }|| COIN:${coin}|| ПЛЕЧЁ:${chosenLeverage}|| ДОГОНЫ:${MAX_ITERATION}`
+        }|| COIN:${coinName}|| ПЛЕЧЁ:${chosenLeverage}|| ДОГОНЫ:${MAX_ITERATION}`
     );
     const allStakes = statistics.allStakes.sort((a, b) => new Date(a.time) - new Date(b.time));
-    console.log(`COIN:${coin}`, allStakes);
+    console.log(`COIN:${coinName}`, allStakes);
     // console.log(statistics);
     return { data, allStakes };
 }
