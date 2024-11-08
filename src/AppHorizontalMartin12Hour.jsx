@@ -5,7 +5,6 @@ import { tickersNovember2021ToNovember2023 } from "./utils/helpers";
 const chunkArray = (arr, size) => (arr.length > size ? [arr.slice(0, size), ...chunkArray(arr.slice(size), size)] : [arr]);
 
 const months = [
-    { name: "October", days: 30, year: 2021 },
     { name: "November", days: 30, year: 2021 },
     { name: "December", days: 31, year: 2021 },
     { name: "January", days: 31, year: 2022 },
@@ -122,7 +121,7 @@ function App5HorizontalMartin() {
         getDataWithDelays();
     }, [coinName]);
 
-    stats.length && console.log("STATS", stats);
+    // stats.length && console.log("STATS", stats);
     return (
         <>
             <div>
