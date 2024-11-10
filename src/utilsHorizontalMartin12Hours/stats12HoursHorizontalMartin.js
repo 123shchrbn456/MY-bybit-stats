@@ -52,6 +52,10 @@ const leverages = {
         LIQUIDATION_PERCENT_UP: 3.5,
         WINNING_PERCENT_DOWN: -4.3,
     },
+    shortX10: {
+        LIQUIDATION_PERCENT_UP: 9.5,
+        WINNING_PERCENT_DOWN: -11.4,
+    },
     longX50: {
         WINNING_PERCENT_UP: 2.3,
         LIQUIDATION_PERCENT_DOWN: -1.5,
@@ -61,8 +65,9 @@ const leverages = {
 // const chosenLeverage = "shortX100";
 const chosenLeverageShortX50 = "shortX50";
 const chosenLeverageShortX25 = "shortX25";
+const chosenLeverageShortX10 = "shortX10";
 
-const winLosePercentage = leverages[chosenLeverageShortX25];
+const winLosePercentage = leverages[chosenLeverageShortX10];
 
 const MAX_ITERATION = 8;
 
@@ -97,12 +102,12 @@ export function tryToSee12HoursHorizontal(coinName, allMonthsResult) {
     const allStakes = statistics.allStakes.sort((a, b) => new Date(a.time) - new Date(b.time));
     console.log("_________________________________________");
     console.log("allStakes", allStakes);
-    let loseStreakToWait = 6;
-    const martin = findWinAfterLoseStreak(allStakes, loseStreakToWait);
+    let loseStreakToWait = 4;
     chosenLeverageShortX25;
-    console.log("Плечё:", chosenLeverageShortX25);
-    console.log("Количество лузов ждём:", loseStreakToWait);
-    console.log("Догонов стата:", martin);
+    console.log("Плечё:", chosenLeverageShortX10);
+    // console.log("Количество лузов ждём:", loseStreakToWait);
+    // const martin = findWinAfterLoseStreak(allStakes, loseStreakToWait);
+    // console.log("Догонов стата:", martin);
     console.log("_________________________________________");
 
     return { data: allMonthsResult, allStakes };
