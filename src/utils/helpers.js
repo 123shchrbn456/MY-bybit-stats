@@ -48,7 +48,7 @@ export function calcPercentageDifference(closedPrice, openedPrice) {
     openedPrice = Number(openedPrice);
     const result = ((closedPrice - openedPrice) / openedPrice) * 100;
     const className = Number(result) > 0 ? "positive" : "negative";
-    return { className: className, value: result.toFixed(2) };
+    return { className: className, value: result.toFixed(4) };
 }
 
 const tickersJune2020ToNovember2023 = [
