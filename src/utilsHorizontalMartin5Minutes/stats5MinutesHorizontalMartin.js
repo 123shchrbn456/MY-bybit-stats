@@ -40,6 +40,12 @@ function findWinAfterLoseStreak(data, MAX_LOSE_STREAK = 6) {
 }
 
 const leverages = {
+    perfectLongX100: {
+        WINNING_PERCENT_UP: 1,
+        LIQUIDATION_PERCENT_DOWN: -1,
+        // WINNING_PERCENT_UP: 0.57,
+        // LIQUIDATION_PERCENT_DOWN: -0.5,
+    },
     longX100_25percent_take_profit: {
         WINNING_PERCENT_UP: 0.285,
         LIQUIDATION_PERCENT_DOWN: -0.5,
@@ -76,15 +82,16 @@ const leverages = {
     },
 };
 
-const chosenLeverageLongX100_25percent_take_profit = "longX100_25percent_take_profit";
-const chosenLeverageShortX100_25percent_take_profit = "shortX100_25percent_take_profit";
-const chosenLeverageLongX100 = "longX100";
-const chosenLeverageShortX100 = "shortX100";
-const chosenLeverageShortX50 = "shortX50";
-const chosenLeverageShortX25 = "shortX25";
-const chosenLeverageShortX10 = "shortX10";
+// const chosenLeverage = "perfectLongX100";
+// const chosenLeverage = "longX100_25percent_take_profit";
+// const chosenLeverage = "shortX100_25percent_take_profit";
+const chosenLeverage = "longX100";
+// const chosenLeverage = "shortX100";
+// const chosenLeverage = "shortX50";
+// const chosenLeverage = "shortX25";
+// const chosenLeverage = "shortX10";
 
-const winLosePercentage = leverages[chosenLeverageShortX100_25percent_take_profit];
+const winLosePercentage = leverages[chosenLeverage];
 
 const MAX_ITERATION = 8;
 
@@ -119,12 +126,12 @@ export function tryToSee5MinutesHorizontal(coinName, allMonthsResult) {
 
     const allStakes = statistics.allStakes.sort((a, b) => new Date(a.time) - new Date(b.time));
     console.log("_________________________________________");
-    console.log("allStakes", allStakes);
-    let loseStreakToWait = 4;
-    console.log("Плечё:", chosenLeverageShortX100_25percent_take_profit);
+    // console.log("allStakes", allStakes);
+    let loseStreakToWait = 3;
+    console.log("Плечё:", chosenLeverage);
     // console.log("Количество лузов ждём:", loseStreakToWait);
-    // const martin = findWinAfterLoseStreak(allStakes, loseStreakToWait);
-    // console.log("Догонов стата:", martin);
+    const martin = findWinAfterLoseStreak(allStakes, loseStreakToWait);
+    console.log("Догонов стата:", martin);
     console.log("_________________________________________");
 
     return { data: allMonthsResult, allStakes };
@@ -163,9 +170,9 @@ export function scanData5MinutesHorizontal(fiveMinutesDataObj, coin) {
         accumulatingBetPercentage += fiveMinutesValue;
 
         // Проигрышь при лонге
-        // if (accumulatingBetPercentage < winLosePercentage.LIQUIDATION_PERCENT_DOWN) {
-        // Проигрышь при шорте
-        if (accumulatingBetPercentage > winLosePercentage.LIQUIDATION_PERCENT_UP) {
+        if (accumulatingBetPercentage < winLosePercentage.LIQUIDATION_PERCENT_DOWN) {
+            // Проигрышь при шорте
+            // if (accumulatingBetPercentage > winLosePercentage.LIQUIDATION_PERCENT_UP) {
             betCountingIsStarted = false;
             accumulatingBetPercentage = 0;
             fiveMinutesDataObj.outcome = {
@@ -182,9 +189,9 @@ export function scanData5MinutesHorizontal(fiveMinutesDataObj, coin) {
         }
 
         // Выигрышь при лонге
-        // if (accumulatingBetPercentage > winLosePercentage.WINNING_PERCENT_UP) {
-        // Выигрышь при шорте
-        if (accumulatingBetPercentage < winLosePercentage.WINNING_PERCENT_DOWN) {
+        if (accumulatingBetPercentage > winLosePercentage.WINNING_PERCENT_UP) {
+            // Выигрышь при шорте
+            // if (accumulatingBetPercentage < winLosePercentage.WINNING_PERCENT_DOWN) {
             betCountingIsStarted = false;
             accumulatingBetPercentage = 0;
             fiveMinutesDataObj.outcome = {

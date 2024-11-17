@@ -40,9 +40,16 @@ function findWinAfterLoseStreak(data, MAX_LOSE_STREAK = 6) {
 }
 
 const leverages = {
+    longX100: {
+        WINNING_PERCENT_UP: 1.14,
+        LIQUIDATION_PERCENT_DOWN: -0.5,
+    },
     shortX100: {
+        // WINNING_PERCENT_DOWN: -0.285,
+        WINNING_PERCENT_DOWN: -0.142,
         LIQUIDATION_PERCENT_UP: 0.5,
-        WINNING_PERCENT_DOWN: -1.14,
+        // WINNING_PERCENT_DOWN: -1.14,
+        // WINNING_PERCENT_DOWN: -0.48,
     },
     shortX50: {
         LIQUIDATION_PERCENT_UP: 1.5,
@@ -62,12 +69,13 @@ const leverages = {
     },
 };
 
-// const chosenLeverage = "shortX100";
-const chosenLeverageShortX50 = "shortX50";
-const chosenLeverageShortX25 = "shortX25";
-const chosenLeverageShortX10 = "shortX10";
+// const chosenLeverage = "longX100";
+const chosenLeverage = "shortX100";
+// const chosenLeverage = "shortX50";
+// const chosenLeverage = "shortX25";
+// const chosenLeverage = "shortX10";
 
-const winLosePercentage = leverages[chosenLeverageShortX10];
+const winLosePercentage = leverages[chosenLeverage];
 
 const MAX_ITERATION = 8;
 
@@ -83,7 +91,7 @@ let statistics = {
 let accumulatingBetPercentage = 0;
 
 let betCountingIsStarted = false;
-let DEMOBET_START_TIME = 12;
+let DEMOBET_START_TIME = 11;
 let MAX_DEMOBET_DAYS_LOSES_IN_A_ROW = 4;
 
 export function tryToSee12HoursHorizontal(coinName, allMonthsResult) {
@@ -102,11 +110,10 @@ export function tryToSee12HoursHorizontal(coinName, allMonthsResult) {
     const allStakes = statistics.allStakes.sort((a, b) => new Date(a.time) - new Date(b.time));
     console.log("_________________________________________");
     console.log("allStakes", allStakes);
-    let loseStreakToWait = 4;
-    chosenLeverageShortX25;
-    console.log("Плечё:", chosenLeverageShortX10);
+    let loseStreakToWait = 6;
+    console.log("Плечё:", chosenLeverage);
     // console.log("Количество лузов ждём:", loseStreakToWait);
-    // const martin = findWinAfterLoseStreak(allStakes, loseStreakToWait);
+    const martin = findWinAfterLoseStreak(allStakes, loseStreakToWait);
     // console.log("Догонов стата:", martin);
     console.log("_________________________________________");
 
@@ -138,6 +145,8 @@ export function scanData12HoursHorizontal(oneHourDataObj, coin) {
     if (betCountingIsStarted === true) {
         accumulatingBetPercentage += oneHourValue;
 
+        // Проигрышь при лонге
+        // if (accumulatingBetPercentage < winLosePercentage.LIQUIDATION_PERCENT_DOWN) {
         // Проигрышь при шорте
         if (accumulatingBetPercentage > winLosePercentage.LIQUIDATION_PERCENT_UP) {
             betCountingIsStarted = false;
@@ -155,6 +164,8 @@ export function scanData12HoursHorizontal(oneHourDataObj, coin) {
             return oneHourDataObj;
         }
 
+        // Выигрышь при лонге
+        // if (accumulatingBetPercentage > winLosePercentage.WINNING_PERCENT_UP) {
         // Выигрышь при шорте
         if (accumulatingBetPercentage < winLosePercentage.WINNING_PERCENT_DOWN) {
             betCountingIsStarted = false;

@@ -1,7 +1,33 @@
 import { calcPercentageDifference, chunkArray } from "../utils//helpers";
 
+function fix5minSeasonChangeTimePart(monthName, data) {
+    if (monthName === "October") {
+        // Начиная с 7524 удалить 12 штук
+        data.splice(7524, 12);
+    }
+
+    if (monthName === "March") {
+        // Копировать данные за один час
+        const copiedOneHourData = data.slice(8652, 8664);
+        const newShit = JSON.parse(JSON.stringify(copiedOneHourData));
+        const lastDayTime = copiedOneHourData[copiedOneHourData.length - 1].finishedTime.getTime();
+        const TWENTY_FIVE_SEC = 25000;
+        newShit.map((fiveMinnObj, index) => {
+            const increasedIndex = index + 1;
+            fiveMinnObj.finishedTime = new Date(lastDayTime + TWENTY_FIVE_SEC * increasedIndex);
+            fiveMinnObj.finishedTime.setHours(2);
+            fiveMinnObj.finishedHour = 2;
+            fiveMinnObj.fakelyCreated = true;
+            return fiveMinnObj;
+        });
+        data.splice(8664, 0, ...newShit);
+    }
+    return data;
+}
+
 // 5 минутный интервал -------------------------------------------------------------------------------------------------------------
 async function get5MinutesSingleAPIRequest(url, monthName = "none", urlIntervalParam) {
+    if (url === "none") return [];
     try {
         const response = await fetch(url);
         const data = await response.json();
@@ -23,14 +49,12 @@ async function get5MinutesSingleAPIRequest(url, monthName = "none", urlIntervalP
         if (urlIntervalParam === "1hour" && monthName === "March") {
             const insertionIndex = 603;
             const newCustomCoinObj = structuredClone(newArr[insertionIndex]);
-            // console.log("March", newCustomCoinObj);
             // newCustomCoinObj.finishedTime = new Date(1679792400000);
             //
             newCustomCoinObj.finishedTime.setHours(3); /* ПЕРЕДЕЛАТЬ! */
             newCustomCoinObj.finishedHour = 3;
             newCustomCoinObj.fakelyCreated = true;
             newArr.splice(insertionIndex, 0, newCustomCoinObj); /* вставляем новый обьект */
-            // console.log("В индексе 27 фейкли криейтед", newArr);
         }
         if (urlIntervalParam === "1hour" && monthName === "October") {
             const editingIndex = 674;
@@ -78,7 +102,10 @@ export async function getOneMonthData5MinutesInterval(coin, month) {
     const urlBinance4 = `https://fapi.binance.com/fapi/v1/klines?symbol=${coin}USDT&interval=5m&startTime=${dateStart4}&endTime=${dateEnd4}&limit=1500`;
     const urlBinance5 = `https://fapi.binance.com/fapi/v1/klines?symbol=${coin}USDT&interval=5m&startTime=${dateStart5}&endTime=${dateEnd5}&limit=1500`;
     const urlBinance6 = `https://fapi.binance.com/fapi/v1/klines?symbol=${coin}USDT&interval=5m&startTime=${dateStart6}&endTime=${dateEnd6}&limit=1500`;
-    const urlBinance31Day = `https://fapi.binance.com/fapi/v1/klines?symbol=${coin}USDT&interval=5m&startTime=${dateStart7}&endTime=${dateEnd7}&limit=1500`;
+    const urlBinance31Day =
+        month.days === 31
+            ? `https://fapi.binance.com/fapi/v1/klines?symbol=${coin}USDT&interval=5m&startTime=${dateStart7}&endTime=${dateEnd7}&limit=1500`
+            : "none";
     // Bybit ссылки
     // const url1 = `https://api.bybit.com/derivatives/v3/public/kline?category=linear&symbol=${coin}USDT&interval=60&start=${dateStart1}&end=${dateEnd1}`;
     // const url2 = `https://api.bybit.com/derivatives/v3/public/kline?category=linear&symbol=${coin}USDT&interval=60&start=${dateStart2}&end=${dateEnd2}`;
@@ -89,18 +116,22 @@ export async function getOneMonthData5MinutesInterval(coin, month) {
     // const url3 = `https://fapi.binance.com/fapi/v1/klines?symbol=${coin}USDT&interval=1h&startTime=${dateStart3}&endTime=${dateEnd3}`;
     // const url4 = `https://fapi.binance.com/fapi/v1/klines?symbol=${coin}USDT&interval=1h&startTime=${dateStart4}&endTime=${dateEnd4}`;
     const allPromises = Promise.all([
-        get5MinutesSingleAPIRequest(urlBinance1, month.name, "1hour"),
-        get5MinutesSingleAPIRequest(urlBinance2, month.name, "1hour"),
-        get5MinutesSingleAPIRequest(urlBinance3, month.name, "1hour"),
-        get5MinutesSingleAPIRequest(urlBinance4, month.name, "1hour"),
-        get5MinutesSingleAPIRequest(urlBinance5, month.name, "1hour"),
-        get5MinutesSingleAPIRequest(urlBinance6, month.name, "1hour"),
+        get5MinutesSingleAPIRequest(urlBinance1, month.name, "5min"),
+        get5MinutesSingleAPIRequest(urlBinance2, month.name, "5min"),
+        get5MinutesSingleAPIRequest(urlBinance3, month.name, "5min"),
+        get5MinutesSingleAPIRequest(urlBinance4, month.name, "5min"),
+        get5MinutesSingleAPIRequest(urlBinance5, month.name, "5min"),
+        get5MinutesSingleAPIRequest(urlBinance6, month.name, "5min"),
+        get5MinutesSingleAPIRequest(urlBinance31Day, month.name, "5min"),
     ]);
 
     try {
         const promiseResult = await allPromises;
         // Изменить promiseResult[4] если месяц март или октябрь
         let singArrayOneMonthData = promiseResult.reduce((accumulator, currentValue) => [...accumulator, ...currentValue], []);
+        if (month.name === "March" || month.name === "October") {
+            singArrayOneMonthData = fix5minSeasonChangeTimePart(month.name, singArrayOneMonthData);
+        }
         const ONE_DAY_ARRAY_LENGTH = 288;
         if (singArrayOneMonthData.length !== month.days * ONE_DAY_ARRAY_LENGTH) {
             console.error("В выбранном месяца не все данные или их нету");
