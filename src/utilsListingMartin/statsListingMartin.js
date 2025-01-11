@@ -82,13 +82,21 @@ const leverages = {
         LIQUIDATION_PERCENT_UP: 1.5,
         WINNING_PERCENT_DOWN: -2.3,
     },
+    // shortX25: {
+    //     LIQUIDATION_PERCENT_UP: 3.5,
+    //     WINNING_PERCENT_DOWN: -4.3,
+    // },
     shortX25: {
-        LIQUIDATION_PERCENT_UP: 3.5,
-        WINNING_PERCENT_DOWN: -4.3,
+        LIQUIDATION_PERCENT_UP: 3,
+        WINNING_PERCENT_DOWN: -4,
     },
     shortX10: {
-        LIQUIDATION_PERCENT_UP: 9.5,
-        WINNING_PERCENT_DOWN: -11.4,
+        LIQUIDATION_PERCENT_UP: 9,
+        WINNING_PERCENT_DOWN: -10,
+    },
+    shortX4: {
+        LIQUIDATION_PERCENT_UP: 23,
+        WINNING_PERCENT_DOWN: -25,
     },
     longX50: {
         WINNING_PERCENT_UP: 2.3,
@@ -106,7 +114,7 @@ const leverages = {
 // const chosenLeverage = "longX100_25percent_take_profit";
 // const chosenLeverage = "longX100";
 // const chosenLeverage = "longX50";
-const chosenLeverage = "longX4";
+const chosenLeverage = "shortX4";
 // const chosenLeverage = "longDemo";
 // const chosenLeverage = "shortX100";
 // const chosenLeverage = "shortX50";
@@ -145,7 +153,7 @@ export function tryToSee5MinutesHorizontal(coinName, allMonthsResult) {
 
     const allStakes = statistics.allStakes.sort((a, b) => new Date(a.time) - new Date(b.time));
     // console.log("_________________________________________");
-    console.log("allStakes", allStakes);
+    console.log(allStakes[0]);
     // console.log("Плечё:", chosenLeverage);
     // console.log("Количество лузов ждём:", loseStreakToWait);
     // const martin = findWinAfterLoseStreak(allStakes, loseStreakToWait);

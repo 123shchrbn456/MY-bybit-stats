@@ -50,10 +50,10 @@ const months = [
 
 function AppListingMartin() {
     const [loading, setLoading] = useState(true);
-    const [stats, setStats] = useState([]);
-    const [renderData, setRenderData] = useState([]);
+    // const [stats, setStats] = useState([]);
+    // const [renderData, setRenderData] = useState([]);
     // const [coinName, setCoinName] = useState("10000000AIDOGE");
-    const [coinName, setCoinName] = useState("FLOCK");
+    const [coinName, setCoinName] = useState("MFER");
     // const [coinName, setCoinName] = useState("XTER");
 
     function changeCoinHandler(e) {
@@ -62,11 +62,11 @@ function AppListingMartin() {
 
     useEffect(() => {
         // Автоматическое переключение монет
-        for (let i = 1; i < listingSPOTTickers.length; i++) {
-            setTimeout(() => {
-                setCoinName(listingSPOTTickers[i]);
-            }, 31000 * (i + 1));
-        }
+        // for (let i = 1; i < listingSPOTTickers.length; i++) {
+        //     setTimeout(() => {
+        //         setCoinName(listingSPOTTickers[i]);
+        //     }, 15000 * (i + 1));
+        // }
     }, []);
 
     useEffect(() => {
@@ -109,14 +109,14 @@ function AppListingMartin() {
                 // console.log("withoutFirstFiveMinutesObj", withoutFirstFiveMinutesObj);
                 const oneMonthDataWithOutcomes = tryToSee5MinutesHorizontal(coinName, withoutFirstFiveMinutesObj);
 
-                const dataDividedByDays = chunkArray(oneMonthDataWithOutcomes.data, 288);
+                // const dataDividedByDays = chunkArray(oneMonthDataWithOutcomes.data, 288);
 
-                setRenderData(dataDividedByDays);
-                setStats((prevStats) => {
-                    const nextStats = [...prevStats, ...oneMonthDataWithOutcomes.allStakes];
-                    nextStats.sort((a, b) => new Date(a.time) - new Date(b.time));
-                    return nextStats;
-                });
+                // setRenderData(dataDividedByDays);
+                // setStats((prevStats) => {
+                //     const nextStats = [...prevStats, ...oneMonthDataWithOutcomes.allStakes];
+                //     nextStats.sort((a, b) => new Date(a.time) - new Date(b.time));
+                //     return nextStats;
+                // });
                 setLoading(false);
             } catch (err) {
                 console.error(err);
@@ -467,7 +467,7 @@ function AppListingMartin() {
                         <th>23:55</th>
                     </tr>
 
-                    {!loading ? (
+                    {/* {!loading ? (
                         renderData.map((coinArr, index) => {
                             return (
                                 <tr className="tr-data" key={Math.floor(Math.random() * Date.now())}>
@@ -496,7 +496,7 @@ function AppListingMartin() {
                         <tr>
                             <td>LOADING.......</td>
                         </tr>
-                    )}
+                    )} */}
                 </tbody>
             </table>
         </>

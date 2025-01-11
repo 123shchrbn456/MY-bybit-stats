@@ -1,6 +1,7 @@
 import { calcPercentageDifference, chunkArray } from "../utils//helpers";
 
 function fix5minSeasonChangeTimePart(monthName, data) {
+    console.log("fix5minSeasonChangeTimePart", data);
     if (data.length === 0) return data;
     if (monthName === "October") {
         // Начиная с 7524 удалить 12 штук
@@ -32,9 +33,14 @@ async function get5MinutesSingleAPIRequest(url, monthName = "none", urlIntervalP
     try {
         const response = await fetch(url);
         const data = await response.json();
+        if (!data.result.list) {
+            console.error(data.retMsg);
+        }
 
         // const coinsData = data; /* При использовании  Binance API */
-        const coinsData = data.result.list.reverse(); /* При использовании  Bybit API */
+        // console.log(data.result);
+
+        const coinsData = data?.result?.list?.reverse(); /* При использовании  Bybit API */
 
         let newArr = coinsData.map((coinData) => ({
             finishedTime: new Date(Number(coinData[0])),
@@ -159,9 +165,9 @@ export async function getOneMonthData5MinutesInterval(coin, month) {
 
         // Изменить promiseResult[4] если месяц март или октябрь
         let singArrayOneMonthData = promiseResult.reduce((accumulator, currentValue) => [...accumulator, ...currentValue], []);
-        if (month.name === "March" || month.name === "October") {
-            singArrayOneMonthData = fix5minSeasonChangeTimePart(month.name, singArrayOneMonthData);
-        }
+        // if (month.name === "March" || month.name === "October") {
+        //     singArrayOneMonthData = fix5minSeasonChangeTimePart(month.name, singArrayOneMonthData);
+        // }
         const ONE_DAY_ARRAY_LENGTH = 288;
         if (singArrayOneMonthData.length !== month.days * ONE_DAY_ARRAY_LENGTH && singArrayOneMonthData.length > 0) {
             /*  console.log(
