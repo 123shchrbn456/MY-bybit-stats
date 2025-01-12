@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { tickersNovember2021ToNovember2023, listingSPOTTickers } from "./utils/helpers";
+import { tickersNovember2021ToNovember2023, ALL_LISTING_TICKERS, UPDATED_FUTURES_TICKERS } from "./utils/helpers";
 import { getOneMonthData5MinutesInterval } from "./utilsListingMartin/apiListingMartin";
 import { tryToSee5MinutesHorizontal } from "./utilsListingMartin/statsListingMartin";
 
@@ -9,20 +9,20 @@ const chunkArray = (arr, size) => (arr.length > size ? [arr.slice(0, size), ...c
 const months = [
     // { name: "November", days: 30, year: 2021 },
     // { name: "December", days: 31, year: 2021 },
-    // { name: "January", days: 31, year: 2022 },
-    // { name: "February", days: 28, year: 2022 },
-    // { name: "March", days: 31, year: 2022 },
-    // { name: "April", days: 30, year: 2022 },
-    // { name: "May", days: 31, year: 2022 },
-    // { name: "June", days: 30, year: 2022 },
-    // { name: "July", days: 31, year: 2022 },
-    // { name: "August", days: 31, year: 2022 },
-    // { name: "September", days: 30, year: 2022 },
-    // { name: "October", days: 31, year: 2022 },
-    // { name: "November", days: 30, year: 2022 },
-    // { name: "December", days: 31, year: 2022 },
-    // { name: "January", days: 31, year: 2023 },
-    // { name: "February", days: 28, year: 2023 },
+    { name: "January", days: 31, year: 2022 },
+    { name: "February", days: 28, year: 2022 },
+    { name: "March", days: 31, year: 2022 },
+    { name: "April", days: 30, year: 2022 },
+    { name: "May", days: 31, year: 2022 },
+    { name: "June", days: 30, year: 2022 },
+    { name: "July", days: 31, year: 2022 },
+    { name: "August", days: 31, year: 2022 },
+    { name: "September", days: 30, year: 2022 },
+    { name: "October", days: 31, year: 2022 },
+    { name: "November", days: 30, year: 2022 },
+    { name: "December", days: 31, year: 2022 },
+    { name: "January", days: 31, year: 2023 },
+    { name: "February", days: 28, year: 2023 },
     { name: "March", days: 31, year: 2023 },
     { name: "April", days: 30, year: 2023 },
     { name: "May", days: 31, year: 2023 },
@@ -53,7 +53,7 @@ function AppListingMartin() {
     // const [stats, setStats] = useState([]);
     // const [renderData, setRenderData] = useState([]);
     // const [coinName, setCoinName] = useState("10000000AIDOGE");
-    const [coinName, setCoinName] = useState("MFER");
+    const [coinName, setCoinName] = useState("FLOCK");
     // const [coinName, setCoinName] = useState("XTER");
 
     function changeCoinHandler(e) {
@@ -62,10 +62,10 @@ function AppListingMartin() {
 
     useEffect(() => {
         // Автоматическое переключение монет
-        // for (let i = 1; i < listingSPOTTickers.length; i++) {
+        // for (let i = 1; i < UPDATED_FUTURES_TICKERS.length; i++) {
         //     setTimeout(() => {
-        //         setCoinName(listingSPOTTickers[i]);
-        //     }, 15000 * (i + 1));
+        //         setCoinName(UPDATED_FUTURES_TICKERS[i]);
+        //     }, 25000 * (i + 1));
         // }
     }, []);
 
@@ -132,7 +132,7 @@ function AppListingMartin() {
             <div>
                 <select name="" id="" value={coinName} onChange={changeCoinHandler}>
                     <option value=""></option>
-                    {listingSPOTTickers.map((ticker) => (
+                    {UPDATED_FUTURES_TICKERS.map((ticker) => (
                         <option key={Math.floor(Math.random() * Date.now())} value={ticker}>
                             {ticker}
                         </option>

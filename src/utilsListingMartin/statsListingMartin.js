@@ -145,20 +145,19 @@ export function tryToSee5MinutesHorizontal(coinName, allMonthsResult) {
         winnersElements: [],
         allStakes: [],
     };
-    // console.log(betCountingIsStartedInside);
+    // console.log(allMonthsResult);
     allMonthsResult.forEach((fiveMinutesDataObj) => {
         scanData5MinutesHorizontal(fiveMinutesDataObj, coinName);
     });
     betCountingIsStartedInside = true;
 
     const allStakes = statistics.allStakes.sort((a, b) => new Date(a.time) - new Date(b.time));
-    // console.log("_________________________________________");
+    if (allStakes[0] === undefined) {
+        console.log(coinName, ":", undefined);
+    }
+    // Исход
+    // Сделать что бы записывало в локал сторедж
     console.log(allStakes[0]);
-    // console.log("Плечё:", chosenLeverage);
-    // console.log("Количество лузов ждём:", loseStreakToWait);
-    // const martin = findWinAfterLoseStreak(allStakes, loseStreakToWait);
-    // console.log("Догонов стата:", martin);
-    // console.log("_________________________________________");
 
     return { data: allMonthsResult, allStakes };
 }
@@ -173,10 +172,9 @@ export function scanData5MinutesHorizontal(fiveMinutesDataObj, coin) {
         // console.log(accumulatingBetPercentage);
 
         // Проигрышь при лонге
-        if (accumulatingBetPercentage < winLosePercentage.LIQUIDATION_PERCENT_DOWN) {
-            // Проигрышь при шорте
-            // if (accumulatingBetPercentage > winLosePercentage.LIQUIDATION_PERCENT_UP) {
-            // betCountingIsStarted = false; /* Единственное изменение */
+        // if (accumulatingBetPercentage < winLosePercentage.LIQUIDATION_PERCENT_DOWN) {
+        // Проигрышь при шорте
+        if (accumulatingBetPercentage > winLosePercentage.LIQUIDATION_PERCENT_UP) {
             accumulatingBetPercentage = 0;
             fiveMinutesDataObj.outcome = {
                 className: "lose",
@@ -194,11 +192,9 @@ export function scanData5MinutesHorizontal(fiveMinutesDataObj, coin) {
         }
 
         // Выигрышь при лонге
-        if (accumulatingBetPercentage > winLosePercentage.WINNING_PERCENT_UP) {
-            // Выигрышь при шорте
-            // if (accumulatingBetPercentage < winLosePercentage.WINNING_PERCENT_DOWN) {
-
-            // betCountingIsStarted = false; /* Единственное изменение */
+        // if (accumulatingBetPercentage > winLosePercentage.WINNING_PERCENT_UP) {
+        // Выигрышь при шорте
+        if (accumulatingBetPercentage < winLosePercentage.WINNING_PERCENT_DOWN) {
             accumulatingBetPercentage = 0;
             fiveMinutesDataObj.outcome = {
                 className: "win",

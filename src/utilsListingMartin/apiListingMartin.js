@@ -34,7 +34,7 @@ async function get5MinutesSingleAPIRequest(url, monthName = "none", urlIntervalP
         const response = await fetch(url);
         const data = await response.json();
         if (!data.result.list) {
-            console.error(data.retMsg);
+            console.warn(data.retMsg, url);
         }
 
         // const coinsData = data; /* При использовании  Binance API */
@@ -132,19 +132,19 @@ export async function getOneMonthData5MinutesInterval(coin, month) {
     //         ? `https://fapi.binance.com/fapi/v1/klines?symbol=${coin}USDT&interval=5m&startTime=${dateStart7}&endTime=${dateEnd7}&limit=1500`
     //         : "none";
     // Bybit ссылки
-    const urlBybit1 = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${coin}USDT&interval=5&start=${dateStart1}&end=${dateEnd1}&limit=1000`;
-    const urlBybit2 = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${coin}USDT&interval=5&start=${dateStart2}&end=${dateEnd2}&limit=1000`;
-    const urlBybit3 = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${coin}USDT&interval=5&start=${dateStart3}&end=${dateEnd3}&limit=1000`;
-    const urlBybit4 = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${coin}USDT&interval=5&start=${dateStart4}&end=${dateEnd4}&limit=1000`;
-    const urlBybit5 = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${coin}USDT&interval=5&start=${dateStart5}&end=${dateEnd5}&limit=1000`;
-    const urlBybit6 = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${coin}USDT&interval=5&start=${dateStart6}&end=${dateEnd6}&limit=1000`;
-    const urlBybit7 = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${coin}USDT&interval=5&start=${dateStart7}&end=${dateEnd7}&limit=1000`;
-    const urlBybit8 = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${coin}USDT&interval=5&start=${dateStart8}&end=${dateEnd8}&limit=1000`;
-    const urlBybit9 = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${coin}USDT&interval=5&start=${dateStart9}&end=${dateEnd9}&limit=1000`;
-    const urlBybit10 = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${coin}USDT&interval=5&start=${dateStart10}&end=${dateEnd10}&limit=1000`;
+    const urlBybit1 = `https://api.bybit.com/v5/market/kline?category=linear&symbol=${coin}USDT&interval=5&start=${dateStart1}&end=${dateEnd1}&limit=1000`;
+    const urlBybit2 = `https://api.bybit.com/v5/market/kline?category=linear&symbol=${coin}USDT&interval=5&start=${dateStart2}&end=${dateEnd2}&limit=1000`;
+    const urlBybit3 = `https://api.bybit.com/v5/market/kline?category=linear&symbol=${coin}USDT&interval=5&start=${dateStart3}&end=${dateEnd3}&limit=1000`;
+    const urlBybit4 = `https://api.bybit.com/v5/market/kline?category=linear&symbol=${coin}USDT&interval=5&start=${dateStart4}&end=${dateEnd4}&limit=1000`;
+    const urlBybit5 = `https://api.bybit.com/v5/market/kline?category=linear&symbol=${coin}USDT&interval=5&start=${dateStart5}&end=${dateEnd5}&limit=1000`;
+    const urlBybit6 = `https://api.bybit.com/v5/market/kline?category=linear&symbol=${coin}USDT&interval=5&start=${dateStart6}&end=${dateEnd6}&limit=1000`;
+    const urlBybit7 = `https://api.bybit.com/v5/market/kline?category=linear&symbol=${coin}USDT&interval=5&start=${dateStart7}&end=${dateEnd7}&limit=1000`;
+    const urlBybit8 = `https://api.bybit.com/v5/market/kline?category=linear&symbol=${coin}USDT&interval=5&start=${dateStart8}&end=${dateEnd8}&limit=1000`;
+    const urlBybit9 = `https://api.bybit.com/v5/market/kline?category=linear&symbol=${coin}USDT&interval=5&start=${dateStart9}&end=${dateEnd9}&limit=1000`;
+    const urlBybit10 = `https://api.bybit.com/v5/market/kline?category=linear&symbol=${coin}USDT&interval=5&start=${dateStart10}&end=${dateEnd10}&limit=1000`;
     const urlBybit31Day =
         month.days === 31
-            ? `https://api.bybit.com/v5/market/kline?category=spot&symbol=${coin}USDT&interval=5&start=${dateStart11}&end=${dateEnd11}&limit=1000`
+            ? `https://api.bybit.com/v5/market/kline?category=linear&symbol=${coin}USDT&interval=5&start=${dateStart11}&end=${dateEnd11}&limit=1000`
             : "none";
     const allPromises = Promise.all([
         get5MinutesSingleAPIRequest(urlBybit1, month.name, "5min"),
